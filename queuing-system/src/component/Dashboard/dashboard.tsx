@@ -2,10 +2,13 @@ import React from "react";
 import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
 import "../Dashboard/dashboard.css";
-import { Line } from '@ant-design/charts';
+// import { Line } from "@ant-design/plots";
+import { Area, RadialBar } from "@ant-design/plots";
 import {
+    ArrowUpOutlined,
     AppstoreOutlined,
     ContainerOutlined,
+    CalendarTwoTone,
     DesktopOutlined,
     MailOutlined,
     MenuFoldOutlined,
@@ -16,9 +19,10 @@ import {
     PieChartOutlined,
     SettingOutlined,
     BellFilled } from '@ant-design/icons';
-import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
-import { useState } from 'react';
+import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col, Calendar, Radio, Select, Statistic, Typography } from 'antd';
+import { useState,useEffect } from 'react';
 import { IWindowSize, useWindowSize } from "../Login/login";
+import LineChart from "@ant-design/plots/es/components/line";
 
 const menu = (
     <Menu
@@ -81,32 +85,70 @@ function getItem(
 
 const Dashboard = () => {
   const size = useWindowSize();
-  const data = [
-    { year: '1991', value: 3 },
-    { year: '1992', value: 4 },
-    { year: '1993', value: 3.5 },
-    { year: '1994', value: 5 },
-    { year: '1995', value: 4.9 },
-    { year: '1996', value: 6 },
-    { year: '1997', value: 7 },
-    { year: '1998', value: 9 },
-    { year: '1999', value: 13 },
-  ];
+  const onPanelChange = (value:any, mode:any) => {
+    console.log(value.format('YYYY-MM-DD'), mode);
+  };
+  const [data, setData] = useState([]);
 
+  useEffect(() => {
+    asyncFetch();
+  }, []);
+
+  const asyncFetch = () => {
+    fetch('https://gw.alipayobjects.com/os/bmw-prod/1d565782-dde4-4bb6-8946-ea6a38ccf184.json')
+      .then((response) => response.json())
+      .then((json) => setData(json))
+      .catch((error) => {
+        console.log('fetch data failed', error);
+      });
+  };
   const config = {
-    data,
-    xField: 'year',
-    yField: 'value',
-    point: {
-      size: 5,
-      shape: 'diamond',
+    data: data,
+    xField: 'Date',
+    yField: 'scales',
+    xAxis: {
+      range: [0, 1],
+      tickCount: 5,
     },
-    label: {
-      style: {
-        fill: '#aaa',
-      },
+    smooth: true,
+    areaStyle: () => {
+      return {
+        fill: 'l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
+      };
     },
   };
+  const data2 = [
+    {
+      name: "G",
+      star: 10
+    },
+    {
+      name: "AVA",
+      star: 90
+    }  ];
+
+    const config2 = {
+      data: data2,
+      xField: "name",
+      yField: "star",
+      maxAngle: 324,
+      radius: 0.8,
+      innerRadius: 0.7,
+      tooltip: {
+        formatter: (datum:any) => {
+          return {
+            name: "star",
+            value: datum.star
+          };
+        }
+      },
+      colorField: "star",
+      color: ( star:any ) => {
+          return "#ff9300";
+      },
+      barBackground: {},
+    };
+
     return (
         <div>
 <Layout style={{"height":"100vh"}}>
@@ -140,7 +182,7 @@ const Dashboard = () => {
       </Header>
       <Content
         style={{
-          margin: '24px 16px 0 3rem',
+          margin: '24px 3rem 0 3rem',
         }}
       >
         <div
@@ -151,28 +193,102 @@ const Dashboard = () => {
         <div>
         <Row gutter={16}>
       <Col span={6}>
-        <Card title="Card title" bordered={false}>
-          Card content
+        <Card bordered={false} style={{borderRadius:"10px"}}>
+          <Row>
+          <Col span={4}><Button className="button-1" shape="circle" icon={<CalendarTwoTone twoToneColor="#52c41a"/>}/></Col>
+          <Col><h1>Số thứ tự đã cấp</h1></Col>
+          </Row>
+          <Row>
+          <Col span={14}>
+          <Statistic value={112893} />
+          </Col>
+          <Col span={10}>
+          <Button className="button-1-2"><Statistic
+            value={11.28}
+            precision={2}
+            valueStyle={{ color: '#3f8600' , fontSize:"0.8rem"}}
+            prefix={<ArrowUpOutlined />}
+            suffix="%"
+          /></Button>
+          </Col>
+          </Row>
         </Card>
       </Col>
       <Col span={6}>
-        <Card title="Card title" bordered={false}>
-          Card content
+      <Card bordered={false} style={{borderRadius:"10px"}}>
+          <Row>
+          <Col span={4}><Button className="button-1" shape="circle" icon={<CalendarTwoTone twoToneColor="#52c41a"/>}/></Col>
+          <Col><h1>Số thứ tự đã cấp</h1></Col>
+          </Row>
+          <Row>
+          <Col span={14}>
+          <Statistic value={112893} />
+          </Col>
+          <Col span={10}>
+          <Button className="button-1-2"><Statistic
+            value={11.28}
+            precision={2}
+            valueStyle={{ color: '#3f8600' , fontSize:"0.8rem"}}
+            prefix={<ArrowUpOutlined />}
+            suffix="%"
+          /></Button>
+          </Col>
+          </Row>
         </Card>
       </Col>
       <Col span={6}>
-        <Card title="Card title" bordered={false}>
-          Card content
+      <Card bordered={false} style={{borderRadius:"10px"}}>
+          <Row>
+          <Col span={4}><Button className="button-1" shape="circle" icon={<CalendarTwoTone twoToneColor="#52c41a"/>}/></Col>
+          <Col><h1>Số thứ tự đã cấp</h1></Col>
+          </Row>
+          <Row>
+          <Col span={14}>
+          <Statistic value={112893} />
+          </Col>
+          <Col span={10}>
+          <Button className="button-1-2"><Statistic
+            value={11.28}
+            precision={2}
+            valueStyle={{ color: '#3f8600' , fontSize:"0.8rem"}}
+            prefix={<ArrowUpOutlined />}
+            suffix="%"
+          /></Button>
+          </Col>
+          </Row>
         </Card>
       </Col>
       <Col span={6}>
-        <Card title="Card title" bordered={false}>
-          Card content
+      <Card bordered={false} style={{borderRadius:"10px"}}>
+          <Row>
+          <Col span={4}><Button className="button-1" shape="circle" icon={<CalendarTwoTone twoToneColor="#52c41a"/>}/></Col>
+          <Col><h1>Số thứ tự đã cấp</h1></Col>
+          </Row>
+          <Row>
+          <Col span={14}>
+          <Statistic value={112893} />
+          </Col>
+          <Col span={10}>
+          <Button className="button-1-2"><Statistic
+            value={11.28}
+            precision={2}
+            valueStyle={{ color: '#3f8600' , fontSize:"0.8rem"}}
+            prefix={<ArrowUpOutlined />}
+            suffix="%"
+          /></Button>
+          </Col>
+          </Row>
         </Card>
       </Col>
     </Row>
         </div>
-    {/* <Line {...config} /> */}
+        <div style={{marginTop:"3rem"}}>
+        <Card bordered={false} style={{borderRadius:"10px"}}>
+        <h1>Bảng thống kê theo ngày</h1>
+        <h5>Tháng 2/2022</h5>
+        <Area {...config} style={{marginTop:"2rem"}}/>
+        </Card>
+        </div>
       </Content>
     </Layout>
     <Sider
@@ -202,19 +318,108 @@ const Dashboard = () => {
             </Col>
         </Row>
         <Row>
-        <Card title="Card title" bordered={false}>
-          Card content
+        <Card bordered={false}>
+        <RadialBar width={100} height={100} {...config2} />
         </Card>
         </Row>
         <Row>
-        <Card title="Card title" bordered={false}>
-          Card content
+        <Card bordered={false}>
+        <RadialBar width={100} height={100} {...config2} />
         </Card>
         </Row>
         <Row>
-        <Card title="Card title" bordered={false}>
-          Card content
+        <Card bordered={false}>
+        <RadialBar width={100} height={100} {...config2} />
         </Card>
+        </Row>
+        <Row>
+        <Calendar
+        fullscreen={false}
+        headerRender={({ value, type, onChange, onTypeChange }) => {
+          const start = 0;
+          const end = 12;
+          const monthOptions = [];
+          const current = value.clone();
+          const localeData = value.localeData();
+          const months = [];
+
+          for (let i = 0; i < 12; i++) {
+            current.month(i);
+            months.push(localeData.monthsShort(current));
+          }
+
+          for (let index = start; index < end; index++) {
+            monthOptions.push(
+              <Select.Option className="month-item" key={`${index}`}>
+                {months[index]}
+              </Select.Option>,
+            );
+          }
+
+          const month = value.month();
+          const year = value.year();
+          const options = [];
+
+          for (let i = year - 10; i < year + 10; i += 1) {
+            options.push(
+              <Select.Option key={i} value={i} className="year-item">
+                {i}
+              </Select.Option>,
+            );
+          }
+
+          return (
+            <div
+              style={{
+                padding: 8,
+              }}
+            >
+              <Typography.Title level={4}>Custom header</Typography.Title>
+              <Row gutter={8}>
+                <Col>
+                  <Radio.Group
+                    size="small"
+                    onChange={(e) => onTypeChange(e.target.value)}
+                    value={type}
+                  >
+                    <Radio.Button value="month">Month</Radio.Button>
+                    <Radio.Button value="year">Year</Radio.Button>
+                  </Radio.Group>
+                </Col>
+                <Col>
+                  <Select
+                    size="small"
+                    dropdownMatchSelectWidth={false}
+                    className="my-year-select"
+                    onChange={(newYear) => {
+                      const now = value.clone().year(Number(newYear));
+                      onChange(now);
+                    }}
+                    value={String(year)}
+                  >
+                    {options}
+                  </Select>
+                </Col>
+                <Col>
+                  <Select
+                    size="small"
+                    dropdownMatchSelectWidth={false}
+                    value={String(month)}
+                    onChange={(selectedMonth) => {
+                      const newValue = value.clone();
+                      newValue.month(parseInt(selectedMonth, 10));
+                      onChange(newValue);
+                    }}
+                  >
+                    {monthOptions}
+                  </Select>
+                </Col>
+              </Row>
+            </div>
+          );
+        }}
+        onPanelChange={onPanelChange}
+      />
         </Row>
     </Sider>
   </Layout>

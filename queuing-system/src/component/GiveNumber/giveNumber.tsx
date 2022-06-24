@@ -1,7 +1,7 @@
 import React from "react";
 import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
-import "../Devices/devices.css";
+import "../GiveNumber/giveNumber.css";
 import { Line } from '@ant-design/charts';
 import {
     AppstoreOutlined,
@@ -15,6 +15,7 @@ import {
     VideoCameraOutlined,
     PieChartOutlined,
     SettingOutlined,
+    PlusSquareFilled,
     BellFilled } from '@ant-design/icons';
 import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
 import { Table, Divider, Tag } from 'antd';
@@ -51,7 +52,7 @@ const menu = (
   const { Header, Content, Footer, Sider } = Layout;
 
 
-const Devices = () => {
+const GiveNumber = () => {
   const size = useWindowSize();
 
   const columns = [
@@ -126,6 +127,34 @@ const Devices = () => {
       address: 'Sidney No. 1 Lake Park',
       tags: ['cool', 'teacher'],
     },
+    {
+        key: '4',
+        name: 'Joe Black',
+        age: 32,
+        address: 'Sidney No. 1 Lake Park',
+        tags: ['cool', 'teacher'],
+      },
+      {
+        key: '5',
+        name: 'Joe Black',
+        age: 32,
+        address: 'Sidney No. 1 Lake Park',
+        tags: ['cool', 'teacher'],
+      },
+      {
+        key: '3',
+        name: 'Joe Black',
+        age: 32,
+        address: 'Sidney No. 1 Lake Park',
+        tags: ['cool', 'teacher'],
+      },
+      {
+        key: '3',
+        name: 'Joe Black',
+        age: 32,
+        address: 'Sidney No. 1 Lake Park',
+        tags: ['cool', 'teacher'],
+      },
   ];
     return (
         <div>
@@ -156,7 +185,7 @@ const Devices = () => {
       >
           <Row>
           <Col span={3}><h1>
-          Thiết bị
+          Cấp số
         </h1>
         </Col>
             <Col span={13}></Col>
@@ -194,20 +223,22 @@ const Devices = () => {
         <div
           className="site-layout-background"
         >
-          <p>Biểu đồ cấp số</p>
+          <p>Quản lý cấp số</p>
         </div>
         <Row>
           <Col span={22}>
         <Table 
-        // className="table-radius"
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
         columns={columns} dataSource={data}
         />
           </Col>
           <Col span={2}>
             <Button
-            style={{marginLeft:"1rem",height:"6rem",width:"4rem", position:"absolute",right:"0",textAlign:"center"}}
-            >Thêm<br/>thiết bị</Button>
+            type="primary"
+            className="add"
+            style={{marginLeft:"1rem",height:"6rem",width:"4rem", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
+            ><PlusSquareFilled  size={20}/><br />
+                Cấp<br/>số mới</Button>
           </Col>
         </Row>
       </Content>
@@ -217,4 +248,4 @@ const Devices = () => {
     )
 }
 
-export default Devices;
+export default GiveNumber;

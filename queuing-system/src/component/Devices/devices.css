@@ -57,6 +57,7 @@ display: none;
 
   .ant-table-thead > tr > th {
       background: #FF7506;
+      color: #f3f3f3;
   }
     .table-row-light {
       background-color: #ffffff;
@@ -64,7 +65,10 @@ display: none;
   .table-row-dark {
       background-color: #ebebeb;
   }
-  .ant-table.ant-table-bordered > .ant-table-title {
-      border: 1rem solid;
+  .table-radius {
+    border-radius: 4rem;
+  }
+  .ant-table table{
+    border-radius: 1rem;
   }
 
