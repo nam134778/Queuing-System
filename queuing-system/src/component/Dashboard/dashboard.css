@@ -20,15 +20,12 @@
   }
 
 .logoalta {
-    margin-top: 1vh;
     width: 5.1rem;
 }
 .logo {
-    /* height: 1vh; */
     width: 1vw;
     margin-left: 5.5vh;
     margin-right: auto;
-    margin-top: 1vh;
     margin-bottom: 3vh;
   }
   .header {
@@ -65,6 +62,62 @@
     background-color: rgb(231, 255, 228);
     border: 0;
     border-radius: 13px;
+  }
+
+  .ant-menu > .ant-menu-item .hover-up:hover {
+    background-color: #FFF2E7 !important;
+    color:#FF7506;
+}
+.ant-menu-vertical .ant-menu-item .hover-up::after,
+.ant-menu-vertical-right .ant-menu-item .hover-up::after,
+.ant-menu-inline .ant-menu-item .hover-up::after {
+  display: none;
+}
+
+.ant-menu-submenu > .ant-menu {
+  border-radius: 0 10px 10px 0;
+}
+
+.ant-menu-submenu:hover > .ant-menu-submenu-title > .ant-menu-submenu-expand-icon,
+.ant-menu-submenu:hover > .ant-menu-submenu-title > .ant-menu-submenu-arrow {
+  color: #FF7506;
+}
+
+.ant-menu-submenu:hover > .ant-menu-submenu-title {
+  background:#FFF2E7;
+  color:#FF7506;
+  border: none;
+}
+
+.ant-menu-vertical .ant-menu-submenu-selected,
+.ant-menu-vertical-left .ant-menu-submenu-selected,
+.ant-menu-vertical-right .ant-menu-submenu-selected {
+  color: #ffffff;
+  background: #FF7506;
+}
+
+  .shadow-card {
+    /* position: absolute; */
+    width: 353px;
+    height:83px;
+    text-align: center;
+    margin-bottom: 12px;
+    margin-left: 1rem;
+    box-shadow: 2px 2px 15px rgba(70, 64, 67, 0.1);
+    border-radius: 12px;
+  }
+  .radial {
+    margin-top: -11.4rem;
+    margin-left: -1rem;
+  }
+  .ant-picker-input{
+    visibility: hidden;
+  }
+  .ant-picker-dropdown {
+    width: 353px;
+    height: 336px;
+    margin-left: 5rem;
+    text-align: center;
   }
 
 

@@ -1,28 +1,17 @@
 import React from "react";
 import 'antd/dist/antd.css';
-import imagelogo from '../Images/Logoalta.png';
 import "../Dashboard/dashboard.css";
-// import { Line } from "@ant-design/plots";
-import { Area, RadialBar } from "@ant-design/plots";
+import type { DatePickerProps } from 'antd';
+import { RadialBar,Area } from "@ant-design/plots";
 import {
     ArrowUpOutlined,
-    AppstoreOutlined,
-    ContainerOutlined,
     CalendarTwoTone,
-    DesktopOutlined,
-    MailOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    UploadOutlined,
     UserOutlined,
-    VideoCameraOutlined,
-    PieChartOutlined,
-    SettingOutlined,
     BellFilled } from '@ant-design/icons';
-import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col, Calendar, Radio, Select, Statistic, Typography } from 'antd';
+import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col, Calendar, Radio, Select, Statistic, Typography, DatePicker } from 'antd';
 import { useState,useEffect } from 'react';
 import { IWindowSize, useWindowSize } from "../Login/login";
-import LineChart from "@ant-design/plots/es/components/line";
+import Menubar from "../Menubar/Menubar";
 
 const menu = (
     <Menu
@@ -46,43 +35,11 @@ const menu = (
     />
   );
 
-type MenuItem = Required<MenuProps>['items'][number];
-
-function getItem(
-    label: React.ReactNode,
-    key?: React.Key | null,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
-    type?: 'group',
-  ): MenuItem {
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    } as MenuItem;
-  }
-  const items: MenuItem[] = [
-    getItem('Dashboard', '1', <PieChartOutlined />),
-    getItem('Option 2', '2', <DesktopOutlined />),
-    getItem('Option 3', '3', <ContainerOutlined />),
-    getItem('Option 2', '2', <DesktopOutlined />),
-    getItem('Option 3', '3', <ContainerOutlined />),
-  
-    getItem('Navigation One', 'sub1', <MailOutlined />, [
-      getItem('Option 5', '5'),
-      getItem('Option 6', '6'),
-      getItem('Option 7', '7'),
-      getItem('Option 8', '8'),
-    ]),
-  ];
-  const onClick: MenuProps['onClick'] = e => {
-    console.log('click', e);
-  };
   const { Header, Content, Footer, Sider } = Layout;
 
-
+  const onChange: DatePickerProps['onChange'] = (date:any, dateString:any) => {
+    console.log(date, dateString);
+  };
 const Dashboard = () => {
   const size = useWindowSize();
   const onPanelChange = (value:any, mode:any) => {
@@ -132,8 +89,8 @@ const Dashboard = () => {
       xField: "name",
       yField: "star",
       maxAngle: 324,
-      radius: 0.8,
-      innerRadius: 0.7,
+      radius: 0.7,
+      innerRadius: 0.6,
       tooltip: {
         formatter: (datum:any) => {
           return {
@@ -144,7 +101,10 @@ const Dashboard = () => {
       },
       colorField: "star",
       color: ( star:any ) => {
-          return "#ff9300";
+          if (star < 100 - star) {
+            return "#1f1f1f";
+          }
+          else return "#ff9300";
       },
       barBackground: {},
     };
@@ -152,25 +112,10 @@ const Dashboard = () => {
     return (
         <div>
 <Layout style={{"height":"100vh"}}>
-    <Sider
+     <Sider
     style={{background:"white"}}
     >
-            <div className="logo">
-          <img src={imagelogo} className="logoalta"/>
-        </div>
-      <Menu
-        className="hover"
-        theme="light"
-        mode="inline"
-        defaultSelectedKeys={['4']}
-        items={[UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
-          (icon, index) => ({
-            key: String(index + 1),
-            icon: React.createElement(icon),
-            label: `nav ${index + 1}`,
-          }),
-        )}
-      />
+    <Menubar />
     </Sider>
     <Layout>
       <Header
@@ -317,110 +262,32 @@ const Dashboard = () => {
             <span>Hello</span>
             </Col>
         </Row>
+        <div style={{marginTop:"5rem"}}>
         <Row>
-        <Card bordered={false}>
-        <RadialBar width={100} height={100} {...config2} />
+        <Card bordered={false} className="shadow-card">
+        <Row>
+          <Col span={5}><RadialBar {...config2} className="radial"/></Col>
+        </Row>
         </Card>
         </Row>
         <Row>
-        <Card bordered={false}>
-        <RadialBar width={100} height={100} {...config2} />
+        <Card bordered={false} className="shadow-card">
+        <Row>
+          <Col span={5}><RadialBar {...config2} className="radial"/></Col>
+        </Row>
         </Card>
         </Row>
         <Row>
-        <Card bordered={false}>
-        <RadialBar width={100} height={100} {...config2} />
+        <Card bordered={false} className="shadow-card">
+        <Row>
+          <Col span={5}><RadialBar {...config2} className="radial"/></Col>
+        </Row>
         </Card>
         </Row>
-        <Row>
-        <Calendar
-        fullscreen={false}
-        headerRender={({ value, type, onChange, onTypeChange }) => {
-          const start = 0;
-          const end = 12;
-          const monthOptions = [];
-          const current = value.clone();
-          const localeData = value.localeData();
-          const months = [];
-
-          for (let i = 0; i < 12; i++) {
-            current.month(i);
-            months.push(localeData.monthsShort(current));
-          }
-
-          for (let index = start; index < end; index++) {
-            monthOptions.push(
-              <Select.Option className="month-item" key={`${index}`}>
-                {months[index]}
-              </Select.Option>,
-            );
-          }
-
-          const month = value.month();
-          const year = value.year();
-          const options = [];
-
-          for (let i = year - 10; i < year + 10; i += 1) {
-            options.push(
-              <Select.Option key={i} value={i} className="year-item">
-                {i}
-              </Select.Option>,
-            );
-          }
-
-          return (
-            <div
-              style={{
-                padding: 8,
-              }}
-            >
-              <Typography.Title level={4}>Custom header</Typography.Title>
-              <Row gutter={8}>
-                <Col>
-                  <Radio.Group
-                    size="small"
-                    onChange={(e) => onTypeChange(e.target.value)}
-                    value={type}
-                  >
-                    <Radio.Button value="month">Month</Radio.Button>
-                    <Radio.Button value="year">Year</Radio.Button>
-                  </Radio.Group>
-                </Col>
-                <Col>
-                  <Select
-                    size="small"
-                    dropdownMatchSelectWidth={false}
-                    className="my-year-select"
-                    onChange={(newYear) => {
-                      const now = value.clone().year(Number(newYear));
-                      onChange(now);
-                    }}
-                    value={String(year)}
-                  >
-                    {options}
-                  </Select>
-                </Col>
-                <Col>
-                  <Select
-                    size="small"
-                    dropdownMatchSelectWidth={false}
-                    value={String(month)}
-                    onChange={(selectedMonth) => {
-                      const newValue = value.clone();
-                      newValue.month(parseInt(selectedMonth, 10));
-                      onChange(newValue);
-                    }}
-                  >
-                    {monthOptions}
-                  </Select>
-                </Col>
-              </Row>
-            </div>
-          );
-        }}
-        onPanelChange={onPanelChange}
-      />
+        <Row style={{marginLeft:"1rem"}}>
+      <DatePicker onChange={onChange} open={true} showToday={false} style={{border:"none"}}/>
         </Row>
+        </div>
     </Sider>
   </Layout>
         </div>

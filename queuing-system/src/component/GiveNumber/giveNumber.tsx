@@ -2,26 +2,17 @@ import React from "react";
 import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
 import "../GiveNumber/giveNumber.css";
-import { Line } from '@ant-design/charts';
 import {
-    AppstoreOutlined,
-    ContainerOutlined,
-    DesktopOutlined,
-    MailOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
-    PieChartOutlined,
-    SettingOutlined,
     PlusSquareFilled,
     BellFilled } from '@ant-design/icons';
 import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
 import { Table, Divider, Tag } from 'antd';
 import { useState } from 'react';
 import { IWindowSize, useWindowSize } from "../Login/login";
-
+import Menubar from "../Menubar/Menubar";
 const menu = (
     <Menu
       items={[
@@ -43,10 +34,6 @@ const menu = (
       ]}
     />
   );
-
-
-
-
 
 
   const { Header, Content, Footer, Sider } = Layout;
@@ -162,59 +149,44 @@ const GiveNumber = () => {
     <Sider
     style={{background:"white"}}
     >
-            <div className="logo">
-          <img src={imagelogo} className="logoalta"/>
-        </div>
-      <Menu
-        className="hover"
-        theme="light"
-        mode="inline"
-        defaultSelectedKeys={['4']}
-        items={[UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
-          (icon, index) => ({
-            key: String(index + 1),
-            icon: React.createElement(icon),
-            label: `nav ${index + 1}`,
-          }),
-        )}
-      />
+      <Menubar />
     </Sider>
     <Layout>
-      <Header
-      className="header"
-      >
-          <Row>
-          <Col span={3}><h1>
-          Cấp số
-        </h1>
-        </Col>
-            <Col span={13}></Col>
-            <Col 
-            span={1}>
-            <Dropdown overlay={menu} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()}>
-                        <Tooltip title="search">
-                            <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
-                        </Tooltip>
-                    </a>
-                </Dropdown>
-            </Col>
-          <Col span={7}>
-              <Row>
-              <Col span={3}>
-            <Avatar size="large" icon={<UserOutlined />} />
-            </Col >
-            <Col 
-            span={21}
-            style={{marginTop:"-0.7rem"}}
-            >
-            <h1>Nguyễn Thị Tần</h1>
-            <h1 style={{marginTop:"-3rem"}}>Hello</h1>
-            </Col>
-              </Row>
-          </Col>
-          </Row>
-      </Header>
+    <Header
+                className="header"
+                >
+                    <Row>
+                    <Col span={5}><h1>
+                    Thông tin cá nhân
+                    </h1>
+                    </Col>
+                        <Col span={15}></Col>
+                        <Col 
+                        span={1}>
+                        <Dropdown overlay={menu} trigger={['click']}>
+                                <a onClick={e => e.preventDefault()}>
+                                    <Tooltip title="search">
+                                        <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
+                                    </Tooltip>
+                                </a>
+                            </Dropdown>
+                        </Col>
+                    <Col span={3}>
+                        <Row>
+                        <Col span={6}>
+                        <Avatar size="large" icon={<UserOutlined />} />
+                        </Col >
+                        <Col 
+                        span={18}
+                        style={{marginTop:"-0.7rem"}}
+                        >
+                        <h1>Nguyễn Thị Tần</h1>
+                        <h1 style={{marginTop:"-3rem"}}>Hello</h1>
+                        </Col>
+                        </Row>
+                    </Col>
+                    </Row>
+                </Header>
       <Content
         style={{
           margin: '24px 0 0 4rem',
@@ -230,6 +202,7 @@ const GiveNumber = () => {
         <Table 
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
         columns={columns} dataSource={data}
+        bordered
         />
           </Col>
           <Col span={2}>

@@ -2,7 +2,6 @@ import React from "react";
 import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
 import "../Devices/devices.css";
-import { Line } from '@ant-design/charts';
 import {
     AppstoreOutlined,
     ContainerOutlined,
@@ -151,41 +150,41 @@ const Devices = () => {
       />
     </Sider>
     <Layout>
-      <Header
-      className="header"
-      >
-          <Row>
-          <Col span={3}><h1>
-          Thiết bị
-        </h1>
-        </Col>
-            <Col span={13}></Col>
-            <Col 
-            span={1}>
-            <Dropdown overlay={menu} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()}>
-                        <Tooltip title="search">
-                            <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
-                        </Tooltip>
-                    </a>
-                </Dropdown>
-            </Col>
-          <Col span={7}>
-              <Row>
-              <Col span={3}>
-            <Avatar size="large" icon={<UserOutlined />} />
-            </Col >
-            <Col 
-            span={21}
-            style={{marginTop:"-0.7rem"}}
-            >
-            <h1>Nguyễn Thị Tần</h1>
-            <h1 style={{marginTop:"-3rem"}}>Hello</h1>
-            </Col>
-              </Row>
-          </Col>
-          </Row>
-      </Header>
+    <Header
+                className="header"
+                >
+                    <Row>
+                    <Col span={5}><h1>
+                    Thông tin cá nhân
+                    </h1>
+                    </Col>
+                        <Col span={15}></Col>
+                        <Col 
+                        span={1}>
+                        <Dropdown overlay={menu} trigger={['click']}>
+                                <a onClick={e => e.preventDefault()}>
+                                    <Tooltip title="search">
+                                        <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
+                                    </Tooltip>
+                                </a>
+                            </Dropdown>
+                        </Col>
+                    <Col span={3}>
+                        <Row>
+                        <Col span={6}>
+                        <Avatar size="large" icon={<UserOutlined />} />
+                        </Col >
+                        <Col 
+                        span={18}
+                        style={{marginTop:"-0.7rem"}}
+                        >
+                        <h1>Nguyễn Thị Tần</h1>
+                        <h1 style={{marginTop:"-3rem"}}>Hello</h1>
+                        </Col>
+                        </Row>
+                    </Col>
+                    </Row>
+                </Header>
       <Content
         style={{
           margin: '24px 0 0 4rem',

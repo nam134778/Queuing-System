@@ -5,13 +5,15 @@ import Login from './component/Login/login';
 import Dashboard from './component/Dashboard/dashboard';
 import Devices from './component/Devices/devices';
 import GiveNumber from './component/GiveNumber/giveNumber';
+import ManageAccount from './component/ManageAccount/manageAccount';
 import { Col, Row } from 'antd';
 const App: React.FC = () =>(
 <div>
   {/* <Login /> */}
-  <Dashboard />
+  {/* <Dashboard /> */}
   {/* <Devices /> */}
-  {/* <GiveNumber /> */}
+  <GiveNumber />
+  {/* <ManageAccount /> */}
 </div>
   );
 

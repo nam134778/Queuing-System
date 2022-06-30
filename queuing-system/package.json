@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.5",
     "antd": "^4.21.3",
     "antd-img-crop": "^4.2.3",
+    "dayjs": "^1.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
