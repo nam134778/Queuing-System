@@ -3,9 +3,9 @@ import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
 import "../GiveNumber/giveNumber.css";
 import {
-    UploadOutlined,
     UserOutlined,
-    VideoCameraOutlined,
+    CaretRightFilled,
+    CaretLeftFilled,
     PlusSquareFilled,
     BellFilled } from '@ant-design/icons';
 import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
@@ -38,6 +38,15 @@ const menu = (
 
   const { Header, Content, Footer, Sider } = Layout;
 
+  function itemRender(current:any, type:any, originalElement:any) {
+    if (type === "prev") {
+      return <Button style={{border:"none",background:"none"}}><CaretLeftFilled style={{fontSize:"1.2rem",color:"rgba(126, 125, 136, 1)"}}/></Button>;
+    }
+    if (type === "next") {
+      return <Button style={{border:"none",background:"none"}}><CaretRightFilled style={{fontSize:"1.2rem",color:"rgba(126, 125, 136, 1)"}}/></Button>;
+    }
+    return originalElement;
+  }
 
 const GiveNumber = () => {
   const size = useWindowSize();
@@ -203,6 +212,9 @@ const GiveNumber = () => {
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
         columns={columns} dataSource={data}
         bordered
+        pagination={
+          {pageSize: 3, itemRender: itemRender}
+        }
         />
           </Col>
           <Col span={2}>

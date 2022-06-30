@@ -36,7 +36,7 @@ const menu = (
   const { Header, Content, Footer, Sider } = Layout;
 
 
-const ManageAccount = () => {
+const Report = () => {
   const size = useWindowSize();
 
   const columns = [
@@ -217,4 +217,4 @@ const ManageAccount = () => {
     )
 }
 
-export default ManageAccount;
+export default Report;

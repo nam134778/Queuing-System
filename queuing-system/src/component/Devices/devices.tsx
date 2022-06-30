@@ -3,22 +3,15 @@ import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
 import "../Devices/devices.css";
 import {
-    AppstoreOutlined,
-    ContainerOutlined,
-    DesktopOutlined,
-    MailOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
-    PieChartOutlined,
-    SettingOutlined,
     BellFilled } from '@ant-design/icons';
 import { Avatar, Card, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
 import { Table, Divider, Tag } from 'antd';
 import { useState } from 'react';
 import { IWindowSize, useWindowSize } from "../Login/login";
+import Menubar from "../Menubar/Menubar";
 
 const menu = (
     <Menu
@@ -41,10 +34,6 @@ const menu = (
       ]}
     />
   );
-
-
-
-
 
 
   const { Header, Content, Footer, Sider } = Layout;
@@ -132,22 +121,7 @@ const Devices = () => {
     <Sider
     style={{background:"white"}}
     >
-            <div className="logo">
-          <img src={imagelogo} className="logoalta"/>
-        </div>
-      <Menu
-        className="hover"
-        theme="light"
-        mode="inline"
-        defaultSelectedKeys={['4']}
-        items={[UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
-          (icon, index) => ({
-            key: String(index + 1),
-            icon: React.createElement(icon),
-            label: `nav ${index + 1}`,
-          }),
-        )}
-      />
+      <Menubar />
     </Sider>
     <Layout>
     <Header
