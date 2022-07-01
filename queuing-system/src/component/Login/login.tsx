@@ -6,6 +6,7 @@ import image from '../Images/Group341.png';
 import imagelogo from '../Images/Logoalta.png';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useEffect,useState } from "react";
+import { Link } from "react-router-dom";
 
 export interface IWindowSize {
     width: number,
@@ -61,7 +62,7 @@ const Login = () => {
             ><Input.Password className="inputform"/></Form.Item>
             <Form.Item
             style={{marginLeft:"5%"}}><a style={{color:"#FF7506"}}>Quên mật khẩu?</a></Form.Item>
-            <Form.Item className="middle-button"><Button type="primary" size={"large"} style={{borderRadius:"0.8rem",paddingTop:"0.2rem",width:"10rem",height:"3rem"}}>Đăng nhập</Button></Form.Item>
+            <Form.Item className="middle-button"><Link to="/"><Button type="primary" size={"large"} style={{borderRadius:"0.8rem",paddingTop:"0.2rem",width:"10rem",height:"3rem"}}>Đăng nhập</Button></Link></Form.Item>
         </Form>
     </Row>
 </Col>

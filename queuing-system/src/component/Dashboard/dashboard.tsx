@@ -113,7 +113,7 @@ const Dashboard = () => {
         <div>
 <Layout style={{"height":"100vh"}}>
      <Sider
-    style={{background:"white"}}
+    style={{background:"white",width:"200px"}}
     >
     <Menubar />
     </Sider>

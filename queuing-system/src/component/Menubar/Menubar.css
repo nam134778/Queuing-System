@@ -1,15 +1,26 @@
 .logoalta {
-    width: 5.1rem;
+    width: 80px;
+    height: 64px;
+    top: 32px;
 }
 .logo {
-    width: 1vw;
+    width: 80px;
     margin-left: 5.5vh;
     margin-right: auto;
     margin-bottom: 3vh;
   }
 
   .ant-menu > .ant-menu-item {
-      color: black;
+      color: rgba(169, 169, 176, 1);
+      font-size: 16px;
+      height: 48px;
+      padding-top: 3px;
+      /* top:12px; */
+      /* left:34px; */
+  }
+  .ant-menu > .ant-menu-item > li {
+        top:12px;
+      left:34px;
   }
 .ant-menu  > .ant-menu-item :hover {
     /* background-color: #FFF2E7 !important; */
@@ -37,6 +48,12 @@
 
 .ant-menu-submenu > .ant-menu {
   border-radius: 0 10px 10px 0;
+  font-size: 16px;
+}
+
+.ant-menu-submenu {
+    color: rgba(169, 169, 176, 1);
+    font-size: 16px;
 }
 
 /* .ant-menu-vertical .ant-menu-item::after,

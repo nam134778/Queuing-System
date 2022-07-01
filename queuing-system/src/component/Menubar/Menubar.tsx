@@ -30,7 +30,7 @@ const Menubar = () => {
             </div>
               <Menu 
               defaultOpenKeys={['1']}
-              mode="vertical" className="hover"  expandIcon={<MoreOutlined />}>
+              mode="vertical" className="hover"  expandIcon={<MoreOutlined style={{fontSize:"16px"}}/>}>
             <Menu.Item key="1" icon={<DashboardIcon className="hover-up"/>} className={(matchPath({path:'/'},pathname))?'active':''}>
             Dashboard
             <Link to="/" />
@@ -52,19 +52,19 @@ const Menubar = () => {
             Báo cáo
             </Menu.Item>
     <Menu.SubMenu key="SubMenu" title="Cài đặt hệ thống" icon={<SettingIcon className="hover-up" />} className={(matchPath({path:'/manage-account'},pathname))?'active2':''}>
-      <Menu.Item key="6" className={(matchPath({path:'/'},pathname))?'active':''}>
+      {/* <Menu.Item key="6" className={(matchPath({path:'/'},pathname))?'active':''}>
         Quản lý vai trò
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item key="7" className={(matchPath({path:'/manage-account'},pathname))?'active':''}>
         <Link to="/manage-account" />
         Quản lý tài khoản
       </Menu.Item>
-        <Menu.Item key="8" className={(matchPath({path:'/'},pathname))?'active':''}>
+        {/* <Menu.Item key="8" className={(matchPath({path:'/'},pathname))?'active':''}>
           Nhật ký người dùng
-        </Menu.Item>
+        </Menu.Item> */}
     </Menu.SubMenu>
   </Menu>
-            <Button style={{width:"10rem",height:"2.5rem",border:"none",borderRadius:"10px",color:"#FF7506",background:"#FFF2E7", top:"26rem"}}><span><LogoutIcon style={{marginTop:"0.3rem",marginLeft:"-7rem"}}/><p style={{marginTop:"-1.5rem"}}>Đăng xuất</p></span></Button>
+            <Link to="/login"><Button style={{width:"176px",height:"48px",border:"none",borderRadius:"8px",color:"#FF7506",background:"#FFF2E7", top:"360px", fontSize:"16px"}}><span><LogoutIcon style={{marginTop:"0.6rem",marginLeft:"-7rem"}}/><p style={{marginTop:"-1.7rem"}}>Đăng xuất</p></span></Button></Link>
         </div>
     )
 }
