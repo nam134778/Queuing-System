@@ -55,6 +55,10 @@
     color: rgba(169, 169, 176, 1);
     font-size: 16px;
 }
+.ant-menu-submenu:hover{
+  color: rgb(17, 17, 211);
+  font-size: 16px;
+}
 
 /* .ant-menu-vertical .ant-menu-item::after,
 .ant-menu-vertical-right .ant-menu-item::after,
@@ -95,3 +99,6 @@
   color: #ffffff;
   background: #FF7506;
 } */
+.hover-up .abc:focus {
+ color: #f3f3f3;
+}

@@ -52,7 +52,19 @@
       background: #FF7506;
     }
   .button-1 {
-    background-color: rgb(231, 255, 228);
+    background-color: rgb(196, 246, 255);
+    border: 0;
+  }
+  .button-2 {
+    background-color: rgb(205, 255, 204);
+    border: 0;
+  }
+  .button-3 {
+    background-color: rgb(255, 233, 204);
+    border: 0;
+  }
+  .button-4 {
+    background-color: rgb(255, 227, 218);
     border: 0;
   }
   .button-1-2 {
@@ -97,26 +109,70 @@
 }
 
   .shadow-card {
-    width: 353px;
-    height:83px;
+    width: 400px;
+    height:90px;
     text-align: center;
+    padding-top: 3px;
     margin-bottom: 12px;
-    margin-left: 1rem;
+    margin-left: 16px;
     box-shadow: 2px 2px 15px rgba(70, 64, 67, 0.1);
     border-radius: 12px;
   }
   .radial {
     margin-top: -11.4rem;
     margin-left: -1rem;
+    /* width: 30px; */
   }
-  .ant-picker-input{
-    visibility: hidden;
+  .ant-picker-calendar {
+    font-size: 16px;
+    /* background: #FF7506; */
   }
-  .ant-picker-dropdown {
-    width: 353px;
-    height: 336px;
-    margin-left: 5rem;
-    text-align: center;
+  /* .ant-picker-calendar {
+    font-size: 16px;
+    background: #FF7506;
+  } */
+  .ant-picker-calendar .ant-picker-panel {
+    border-top: 2px solid #f0f0f0;
   }
-
-
+.calendar th {
+  color: #FF7506;
+  font-size: 17px;
+  font-weight: 500;
+}
+.ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+  color: #fff;
+  background: #FF7506;
+  border-radius: 7px;
+  /* border-top: 10px; */
+  /* line-height: 30px; */
+}
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end)::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end)::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-start.ant-picker-cell-range-start-single::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-start.ant-picker-cell-range-start.ant-picker-cell-range-end.ant-picker-cell-range-end-near-hover::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-end.ant-picker-cell-range-start.ant-picker-cell-range-end.ant-picker-cell-range-start-near-hover::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-end.ant-picker-cell-range-end-single::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after {
+  border-top: 1px dashed #FF7506;
+  border-bottom: 1px dashed #FF7506;
+}
+tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover:first-child::after,
+tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:first-child::after,
+.ant-picker-cell-in-view.ant-picker-cell-start.ant-picker-cell-range-hover-edge-start.ant-picker-cell-range-hover-edge-start-near-range::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-edge-start:not(.ant-picker-cell-range-hover-edge-start-near-range)::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-start::after {
+  border-left: 1px dashed #FF7506;
+}
+tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover:last-child::after,
+tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:last-child::after,
+.ant-picker-cell-in-view.ant-picker-cell-end.ant-picker-cell-range-hover-edge-end.ant-picker-cell-range-hover-edge-end-near-range::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-edge-end:not(.ant-picker-cell-range-hover-edge-end-near-range)::after,
+.ant-picker-cell-in-view.ant-picker-cell-range-hover-end::after {
+  border-right: 1px dashed #FF7506;
+}
+.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border: 1px solid #FF7506;
+  border-radius: 7px;
+}

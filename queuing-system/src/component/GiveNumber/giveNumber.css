@@ -27,6 +27,8 @@
     .ant-table-thead > tr > th {
         background: rgba(255, 145, 56, 1);
         color: #f3f3f3;
+        font-size: 16px;
+        line-height: 24px;
     }
       .table-row-light {
         background-color: #ffffff;
@@ -39,6 +41,18 @@
 
     .add {
         color: #FF7506;
+        border: none;
+        box-shadow: 0px 0px 6px #E7E9F2;
+        border-radius: 8px 0px 0px 8px;
+        width: 80px;
+    }
+    .add:hover {
+      color: #FF7506;
+      border: none;
+    }
+    .add:focus {
+      color: #FF7506;
+      border: none;
     }
 
       .ant-table-container table > thead > tr:first-child th:first-child {
@@ -110,4 +124,56 @@
   color:rgba(126, 125, 136, 1);
   border:none;
   background: transparent;
+}
+
+.ant-modal-footer {
+  background: #FF7506;
+}
+.contentModal{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 24px auto 20px;
+}
+.contentModal .text{
+  color: #535261;
+  font-size: 32px;
+  line-height: 48px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+.contentModal .number{
+  color: #FF7506;
+  font-size: 56px;
+  line-height: 60px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+.contentModal .subtext{
+  color: #282739;
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 400;
+}
+.footerModal{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.footerModal .text{
+  color: rgb(255, 255, 255);
+  font-size: 22px;
+  line-height: 33px;
+  font-weight: 500;
+}
+.footerModal .text:first-child{
+  margin-bottom: 12px;
+}
+.ant-modal-content {
+  border-radius: 10px;
+}
+.ant-modal-footer {
+  border-radius: 0 0 10px 10px;
 }

@@ -1,11 +1,9 @@
 import React from "react";
 import 'antd/dist/antd.css';
 import imagelogo from '../Images/Logoalta.png';
-// import "../Dashboard/dashboard.css";
 import "../Menubar/Menubar.css";
-import { MoreOutlined, AppstoreOutlined,MailOutlined,SettingOutlined } from '@ant-design/icons';
-import {Menu, MenuProps, Button} from 'antd';
-import { IWindowSize, useWindowSize } from "../Login/login";
+import { MoreOutlined } from '@ant-design/icons';
+import {Menu, Button} from 'antd';
 import DashboardIcon from "../Icons/DashboardIcon";
 import MonitorIcon from "../Icons/MonitorIcon";
 import TalkIcon from "../Icons/TalkIcon";
@@ -16,12 +14,7 @@ import LogoutIcon from "../Icons/LogoutIcon";
 import { Link, useLocation } from "react-router-dom";
 import { matchPath } from "react-router-dom";
 
-  const onClick: MenuProps['onClick'] = e => {
-    console.log('click', e);
-  };
-
 const Menubar = () => {
-  const size = useWindowSize();
   const {pathname} = useLocation();
     return (
         <div style={{textAlign:"center"}}>
@@ -51,7 +44,7 @@ const Menubar = () => {
             <Link to="/report" />
             Báo cáo
             </Menu.Item>
-    <Menu.SubMenu key="SubMenu" title="Cài đặt hệ thống" icon={<SettingIcon className="hover-up" />} className={(matchPath({path:'/manage-account'},pathname))?'active2':''}>
+    <Menu.SubMenu key="SubMenu" title="Cài đặt hệ thống" icon={<SettingIcon className="hover-up abc" />} className={(matchPath({path:'/manage-account'},pathname))?'active2':''}>
       {/* <Menu.Item key="6" className={(matchPath({path:'/'},pathname))?'active':''}>
         Quản lý vai trò
       </Menu.Item> */}

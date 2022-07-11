@@ -36,7 +36,6 @@ const menu = (
     />
   );
 
-
   const { Header, Content, Sider } = Layout;
 
   const getBase64 = (img: RcFile, callback: (url: string) => void) => {
