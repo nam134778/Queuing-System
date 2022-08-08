@@ -2,18 +2,29 @@ import React from "react";
 import 'antd/dist/antd.css';
 import "../Devices/devices.css";
 import {
-  CaretDownOutlined,
   CaretRightFilled,
   CaretLeftFilled,
     UserOutlined,
-    PlusSquareFilled,
     BellFilled } from '@ant-design/icons';
-import { Avatar, Card, Badge, Form, Input,  Layout, Menu, Space, Select, Typography, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
-import { Table, Divider, Tag } from 'antd';
-import { useState } from 'react';
-import { IWindowSize, useWindowSize } from "../Login/login";
+import { Avatar, Breadcrumb, DatePicker, Badge, Form,  Layout, Menu, Space, Select, Typography, Button, Tooltip, Dropdown, Row, Col } from 'antd';
+import { Table } from 'antd';
+import { useState, useEffect } from 'react';
 import Menubar from "../Menubar/Menubar";
 import { ColumnsType } from 'antd/lib/table';
+import DownloadIcon from "../Icons/Download";
+import { Excel } from "antd-table-saveas-excel";
+import moment, { Moment } from "moment";
+import { RangeValue } from "rc-picker/lib/interface";
+import { useAppSelector, useAppDispatch } from "../../store";
+import {
+    giveNumberSelector,
+    getAll,
+} from "../../store/reducers/giveNumberSlice";
+import { userSelector } from "../../store/reducers/userSlice";
+import { Link, Navigate } from "react-router-dom";
+import   Notification  from "../Notification/Notification";
+
+const {RangePicker} = DatePicker;
 const menu = (
     <Menu
       items={[
@@ -49,16 +60,8 @@ const menu = (
     }
     return originalElement;
   }
-  interface DataType {
-    key: string;
-    stt:string;
-    name_ser: string;
-    time: string;
-    status: string[];
-    nsx: string;
-  }
   
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
       title: 'Số thứ tự',
       dataIndex: 'stt',
@@ -82,26 +85,6 @@ const menu = (
       title: 'Trạng thái hoạt động',
       dataIndex: 'status',
       key: 'status',
-      render: (_, { status }) => (
-        <>
-          {status.map(status => {
-            let color = status.length > 5 ? 'geekblue' : 'green';
-            
-            if (status === 'Bỏ qua') {
-              color = 'volcano';
-            }
-            if (status === 'Đang chờ') {
-              color = 'blue';
-            }
-            if (status === 'Đã sử dụng') {
-              color = 'gray';
-            }
-            return (
-              <Badge color={color} text={status} />
-            );
-          })}
-        </>
-      ),
     },
     {
       title: 'Nguồn cấp',
@@ -111,7 +94,7 @@ const menu = (
   
   ]
   
-  const data: DataType[] = [
+  const data = [
     {
       key: '1',
       stt:'2010001',
@@ -208,91 +191,137 @@ const menu = (
 
 
 const Report = () => {
-  const [data2, setData2] = useState<DataType[]>(data);
+  const idLogin = localStorage.getItem("userId");
+  const [data2, setData2] = useState<any>(data);
+  const dispatch = useAppDispatch();
+  const { loading, giveNumbers } = useAppSelector(giveNumberSelector);
+  const { userLogin } = useAppSelector(userSelector);
+  const [dateRange, setDateRange] = useState<RangeValue<Moment>>(null);
+  const excel = new Excel();
+  excel
+      .addSheet("Report")
+      .addColumns([
+          ...columns,
+      ])
+      .addDataSource(
+          giveNumbers.map(
+              (giveNumber) => {
+                  return {
+                      key: giveNumber.id,
+                      stt: giveNumber.number,
+                      name_ser: giveNumber.service,
+                      time: moment(
+                          giveNumber.timeGet.toDate()
+                      ).format(
+                          "HH:mm - DD/MM/YYYY"
+                      ),
+                      status:
+                          giveNumber.status ==
+                          "waiting"
+                              ? "Đang chờ"
+                              : giveNumber.status ==
+                                "used"
+                              ? "Đã sử dụng"
+                              : "Bỏ qua",
+                      src: giveNumber.src,
+                      customer:
+                          giveNumber.name,
+                      phoneNumber:
+                          giveNumber.phoneNumber,
+                      email: giveNumber.email,
+                  };
+              }
+          ),
+          {
+              str2Percent: true,
+          }
+      )
+      
+  useEffect(() => {
+      dispatch(
+          getAll({
+              keywords: "",
+              dateRange: dateRange
+                  ? [dateRange[0] as Moment, dateRange[1] as Moment]
+                  : null,
+          })
+      );
+  }, [dateRange]);
+
+  if (!idLogin) return <Navigate to="/login"></Navigate>;
     return (
         <div>
-<Layout style={{"height":"100vh"}}>
+<Layout style={{"height":"100vh",fontFamily:"Nunito"}}>
     <Sider
     style={{background:"white"}}
     >
       <Menubar />
     </Sider>
     <Layout>
-      <Header
-      className="header"
-      >
-          <Row>
-          <Col span={3}><h1>
-          Cấp số
-        </h1>
-        </Col>
-            <Col span={13}></Col>
-            <Col 
-            span={1}>
-            <Dropdown overlay={menu} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()}>
-                        <Tooltip title="search">
-                            <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
-                        </Tooltip>
-                    </a>
-                </Dropdown>
-            </Col>
-          <Col span={7}>
-              <Row>
-              <Col span={3}>
-            <Avatar size="large" icon={<UserOutlined />} />
-            </Col >
-            <Col 
-            span={21}
-            style={{marginTop:"-0.7rem"}}
-            >
-            <h1>Nguyễn Thị Tần</h1>
-            <h1 style={{marginTop:"-3rem"}}>Hello</h1>
-            </Col>
-              </Row>
-          </Col>
-          </Row>
-      </Header>
-      <Content
+    <Header
+                className="header"
+                >
+                    <Row style={{marginTop:"25px"}}>
+                    <Col span={6}>
+                      <Breadcrumb separator=">" style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
+                        <Breadcrumb.Item>Báo cáo</Breadcrumb.Item>
+                        <Breadcrumb.Item>Lập báo cáo</Breadcrumb.Item>
+                      </Breadcrumb>
+                    </Col>
+                        <Col span={14}></Col>
+                        <Col 
+                        span={1}>
+                        <Notification />
+                        </Col>
+                    <Col span={3}>
+                    <Row>
+                        <Col span={6}>
+                        <Link to='/profile'>
+                        <Avatar size="large" icon={<UserOutlined />} />
+                        </Link>
+                        </Col >
+                        <Col 
+                        span={18}
+                        style={{marginTop:"-0.7rem"}}
+                        >
+                        <Link to='/profile'>
+                            <Row><Typography.Text>Xin chào</Typography.Text></Row>
+                            <Row><Typography.Text  style={{marginTop:"-40px", fontWeight:"700"}}>{userLogin?.name}</Typography.Text ></Row>
+                        </Link>
+                        </Col>
+                        </Row>
+                    </Col>
+                    </Row>
+                </Header>
+                <Content
         style={{
-          margin: '24px 0 0 4rem',
+          margin: '31px 0rem 0 3rem',
         }}
       >
         <div
           className="site-layout-background"
         >
-          <p>Quản lý cấp số</p>
+          {/* <p style={{fontSize:"28px",color:"#FF7506",fontWeight:"700"}}>Quản lý cấp số</p> */}
         </div>
-        <Row>
+        <Row style={{marginTop:"40px"}}>
           <Col span={22}>
           <Form layout="vertical">
                 <Row justify="space-between" className='inputContainer'>
                   <Col>
-                    <Space size={24}>
-                      <Form.Item
-                      label={<Typography.Text strong className="text-1">Trạng thái hoạt động</Typography.Text>}
-                      className='selectContainer'
+                    <Space>
+                          <Form.Item
+                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px"}}>Chọn thời gian</Typography.Text>}
                       >      
-                        <Select defaultValue="all" style={{width:"300px", height:"44px", borderRadius:"10px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
-                          <CaretDownOutlined
-                            style={{ fontSize: "20px", color: "#FF7506" }}
-                          />
-                        } showSearch showArrow>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="yes">Hoạt động</Option>
-                                <Option value="no">Ngưng hoạt động</Option>
-                              </Select>
+                            <div className="date-pick1" >
+                            {/* <Form.Item noStyle> */}
+                              <RangePicker format="DD/MM/YYYY" style={{height:"52px",fontSize:"24px"}}
+                              // suffixIcon={} 
+                                />
+                            {/* </Form.Item> */}
+                            </div>
                           </Form.Item>
                       </Space>
                     </Col>
-                    <Col flex="450px">
-                      <Form.Item
-                        label={<Typography.Text strong className="text-3">Từ khóa</Typography.Text>}
-                      >
-                            <Input placeholder="Nhập từ khóa" style={{ width: '95%' }} className="thirst-select" size="large"/>
-                      </Form.Item>
-                    </Col>
-                  
                 </Row>
               </Form>
           </Col>
@@ -301,7 +330,30 @@ const Report = () => {
           <Col span={22}>
         <Table 
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
-        columns={columns} dataSource={data2}
+        columns={columns}
+        // dataSource={data2}
+        dataSource={giveNumbers.map(
+          (giveNumber) => {
+              return {
+                  key: giveNumber.id,
+                  stt: giveNumber.number,
+                  name_ser: giveNumber.service,
+                  time: moment(
+                      giveNumber.timeGet.toDate()
+                  ).format("HH:mm - DD/MM/YYYY"),
+                  status: (
+                    <Badge color={giveNumber.status == "skip" ? 'volcano' : giveNumber.status == "waiting" ? 'blue' : 'rgb(190, 190, 190)'} text={giveNumber.status == "waiting"
+                    ? "Đang chờ"
+                    : giveNumber.status ==
+                      "used"
+                    ? "Đã sử dụng"
+                    : "Bỏ qua"} />
+                  ),
+                  nsx: giveNumber.src,
+              };
+          }
+      )}
+        loading={loading}
         bordered
         pagination={
           {pageSize: 9, itemRender: itemRender}
@@ -312,8 +364,10 @@ const Report = () => {
           <Button
             // type="primary"
             className="add"
-            style={{marginLeft:"1rem",height:"6rem",width:"4rem", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
-            ><PlusSquareFilled  style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
+            onClick={()=>{excel.saveAs("Report.xlsx");}}
+            style={{marginLeft:"1rem",height:"80px",width:"80px", fontWeight:"700", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
+            ><DownloadIcon  
+            style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
                 Tải về</Button>
           </Col>
         </Row>

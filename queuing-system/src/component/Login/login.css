@@ -20,11 +20,7 @@
     margin-left: 10rem;
     margin-top: 10rem;
 }
-.image-right2 {
-    margin-left: 4rem;
-    height: 30rem;
-    margin-top: 10rem;
-}
+
 .ant-btn-primary {
     background-color: #ffae6b;
     border-color: #FFF2E7;
@@ -34,11 +30,4 @@
       color: rgb(255, 255, 255);
       border-color: #FF7506;
       background: #FF7506;
-    }
-    .middle-button {
-        text-align: center;
-        /* margin-left: 5rem; */
-    }
-    .middle-button2 {
-        margin-left: 10rem;
     }

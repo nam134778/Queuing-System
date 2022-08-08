@@ -9,14 +9,22 @@ import {
     CaretDownOutlined,
     SearchOutlined,
     BellFilled } from '@ant-design/icons';
-import { Avatar, Card, Select, Typography, Form, Input, Badge, Space, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
+import { Avatar, Card, Select, Typography, Form, Input, Badge, Space, Layout, Menu, Breadcrumb, Button, Tooltip, Dropdown, Row, Col } from 'antd';
 import { Table, Divider, Tag } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useState } from 'react';
-import { IWindowSize, useWindowSize } from "../Login/login";
+import { useState, useEffect } from 'react';
 import Menubar from "../Menubar/Menubar";
-import { Link } from "react-router-dom";
-
+import PlusIcon from "../Icons/Plus";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../store";
+import { deviceSelector } from "../../store/reducers/deviceSlice";
+import {
+    serviceSelector,
+    getAll as getAllService,
+} from "../../store/reducers/serviceSlice";
+import { getAll } from "../../store/actions/deviceActions";
+import { userSelector } from "../../store/reducers/userSlice";
+import   Notification  from "../Notification/Notification";
 const menu = (
     <Menu
       items={[
@@ -54,19 +62,7 @@ const menu = (
     console.log(`selected ${value}`);
   };
   
-  interface DataType {
-    key: string;
-    device_id: string;
-    device_name: string;
-    ip_address: string;
-    active_status: string[];
-    connect_status: string[];
-    services: string;
-    detail: string;
-    update: string;
-  }
-  
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
       title: 'Mã thiết bị',
       dataIndex: 'device_id',
@@ -87,170 +83,66 @@ const menu = (
       title: 'Trạng thái hoạt động',
       dataIndex: 'active_status',
       key: 'active_status',
-      render: (_, { active_status }) => (
-        <>
-          {active_status.map(status => {
-            let color = status.length > 5 ? 'geekblue' : 'green';
-            
-            if (status === 'Ngưng hoạt động') {
-              color = 'volcano';
-            }
-            if (status === 'Hoạt động') {
-              color = 'green';
-            }
-            return (
-              <Badge color={color} text={status} />
-            );
-          })}
-        </>
-      ),
+      width:'15%',
     },
     {
       title: 'Trạng thái kết nối',
       dataIndex: 'connect_status',
       key: 'connect_status',
-      render: (_, { connect_status }) => (
-        <>
-          {connect_status.map(status => {
-            let color = status.length > 5 ? 'geekblue' : 'green';
-            
-            if (status === 'Mất kết nối') {
-              color = 'volcano';
-            }
-            if (status === 'Kết nối') {
-              color = 'green';
-            }
-            return (
-              <Badge color={color} text={status} />
-            );
-          })}
-        </>
-      ),
+      width:'15%',
+    },
+    {
+      title: 'Dịch vụ sử dụng',
+      dataIndex: 'services',
+      key: 'services',
+      width:'30%',
+      ellipsis: {showTitle: true},
     },
     {
       title: '',
       dataIndex: 'detail',
       key: 'detail',
-      render: text => <a>{text}</a>,
     },
     {
       title: '',
       dataIndex: 'update',
       key: 'update',
-      render: text => <a>{text}</a>,
     },
   
   ]
   
-  const data: DataType[] = [
-    {
-      key: '1',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Ngưng hoạt động'],
-      connect_status: ['Mất kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },
-    {
-      key: '2',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Hoạt động'],
-      connect_status: ['Kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },
-    {
-      key: '3',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Hoạt động'],
-      connect_status: ['Mất kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },  
-    {
-      key: '4',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Ngưng hoạt động'],
-      connect_status: ['Kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },
-    {
-      key: '5',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Hoạt động'],
-      connect_status: ['Mất kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },
-    {
-      key: '6',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Hoạt động'],
-      connect_status: ['Kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    }, 
-    {
-      key: '7',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Ngưng hoạt động'],
-      connect_status: ['Kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },
-    {
-      key: '8',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Hoạt động'],
-      connect_status: ['Kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    },
-    {
-      key: '9',
-      device_id: 'KIO_01',
-      device_name: 'Kiosk',
-      ip_address: '192.168.1.0',
-      active_status: ['Hoạt động'],
-      connect_status: ['Mất kết nối'],
-      services: 'Khám tim mạch, Khám Sản - Phụ khoa, Khám răng hàm mặt, Khám tai mũi họng, Khám hô hấp, Khám tổng quát',
-      detail: 'Chi tiết',
-      update: 'Cập nhật',
-    }, 
-  ];
-  const { Header, Content, Footer, Sider } = Layout;
+  const { Header, Content, Sider } = Layout;
 
 
 const Devices = () => {
-  const [data2, setData2] = useState<DataType[]>(data);
+  const idLogin = localStorage.getItem("userId");
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, devices } = useAppSelector(deviceSelector);
+  const { services } = useAppSelector(serviceSelector);
+  const { userLogin } = useAppSelector(userSelector);
+  const [active, setActive] = useState<boolean | null>(null);
+  const [connect, setConnect] = useState<boolean | null>(null);
+  const [keywords, setKeywords] = useState<string>("");
+  const [value, setValue] = useState<string>('')
+  useEffect(() => {
+    dispatch(
+        getAll({
+            active,
+            connect,
+            keywords,
+        })
+    );
+}, [active, connect, keywords]);
+
+useEffect(() => {
+    dispatch(getAllService());
+}, []);
+
+if (!idLogin) return <Navigate to="/login"></Navigate>;
     return (
         <div>
-<Layout style={{"height":"100vh"}}>
+<Layout style={{"height":"100vh","fontFamily":"Nunito"}}>
     <Sider
     style={{background:"white"}}
     >
@@ -260,48 +152,47 @@ const Devices = () => {
     <Header
                 className="header"
                 >
-                    <Row style={{marginTop:"10px"}}>
-                    <Col span={5}><span style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
-                    Thiết bị &gt; </span>
-                    <span style={{fontWeight:"700",fontSize:"20px",color: "#FF7506"}}>
-                    Danh sách thiết bị</span>
-                    </Col>
+                    <Row style={{marginTop:"25px"}}>
+                        <Col span={5}>
+                        <Breadcrumb separator=">" style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
+                        <Breadcrumb.Item>Thiết bị</Breadcrumb.Item>
+                        <Breadcrumb.Item>Danh sách thiết bị</Breadcrumb.Item>
+                      </Breadcrumb>
+                        </Col>
                         <Col span={15}></Col>
                         <Col 
                         span={1}>
-                        <Dropdown overlay={menu} trigger={['click']}>
-                                <a onClick={e => e.preventDefault()}>
-                                    <Tooltip title="search">
-                                        <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
-                                    </Tooltip>
-                                </a>
-                            </Dropdown>
+                        <Notification />
                         </Col>
                     <Col span={3}>
                         <Row>
                         <Col span={6}>
+                        <Link to='/profile'>
                         <Avatar size="large" icon={<UserOutlined />} />
+                        </Link>
                         </Col >
                         <Col 
                         span={18}
                         style={{marginTop:"-0.7rem"}}
                         >
-                        <p>Xin chào</p>
-                        <h1 style={{marginTop:"-3.5rem"}}>Nguyễn Thọ Nam</h1>
+                        <Link to='/profile'>
+                            <Row><Typography.Text>Xin chào</Typography.Text></Row>
+                            <Row><Typography.Text  style={{marginTop:"-40px", fontWeight:"700"}}>{userLogin?.name}</Typography.Text ></Row>
+                        </Link>
                         </Col>
                         </Row>
                     </Col>
                     </Row>
                 </Header>
-      <Content
+                <Content
         style={{
-          margin: '30px 0 0 4rem',
+          margin: '31px 0rem 0 3rem',
         }}
       >
         <div
           className="site-layout-background"
         >
-          <p style={{fontSize:"24px", fontWeight:"700", lineHeight:"36px", color:"#FF7506"}}>Biểu đồ cấp số</p>
+          <p style={{fontSize:"28px",color:"#FF7506",fontWeight:"700"}}>Danh sách thiết bị</p>
         </div>
         <Row>
           <Col span={22}>
@@ -313,28 +204,39 @@ const Devices = () => {
                       label={<Typography.Text strong className="text-1" style={{fontSize:"16px"}}>Trạng thái hoạt động</Typography.Text>}
                       className='selectContainer'
                       >      
-                        <Select defaultValue="all" style={{width:"300px", height:"44px", borderRadius:"10px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
+                        <Select style={{width:"300px", height:"50px", borderRadius:"10px"}} className="first-select" size="large" suffixIcon={
                           <CaretDownOutlined
                             style={{ fontSize: "20px", color: "#FF7506" }}
                           />
-                        }>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="yes">Hoạt động</Option>
-                                <Option value="no">Ngưng hoạt động</Option>
+                        }
+                        dropdownStyle={{height:"154px"}}
+                        defaultValue={null}
+                        value={active}
+                        onChange={(value) => setActive(value)}
+                        >
+                                    <Option value={null}>Tất cả</Option>
+                                    <Option value={true}>Hoạt động</Option>
+                                    <Option value={false}>
+                                        Ngưng hoạt động
+                                    </Option>
                               </Select>
                           </Form.Item>
                           <Form.Item
                       label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"15px"}}>Trạng thái kết nối</Typography.Text>}
                       className='selectContainer'
                       >      
-                        <Select defaultValue="all" style={{width:"300px", height:"44px", borderRadius:"10px",marginLeft:"15px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
+                        <Select style={{width:"300px", height:"50px", borderRadius:"10px",marginLeft:"15px"}} className="first-select-2" size="large" suffixIcon={
                           <CaretDownOutlined
                             style={{ fontSize: "20px", color: "#FF7506" }}
                           />
-                        }>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="yes">Kết nối</Option>
-                                <Option value="no">Mất kết nối</Option>
+                        }
+                        defaultValue={null}
+                        value={connect}
+                        onChange={(value) => setConnect(value)}
+                        >
+                                <Option value={null}>Tất cả</Option>
+                                <Option value={true}>Kết nối</Option>
+                                <Option value={false}>Mất kết nối</Option>
                               </Select>
                           </Form.Item>
                       </Space>
@@ -343,7 +245,12 @@ const Devices = () => {
                       <Form.Item
                         label={<Typography.Text strong className="text-3" style={{fontSize:"16px"}}>Từ khóa</Typography.Text>}
                       >
-                            <Input placeholder="Nhập từ khóa" style={{ width: '300px', height:"44px" }} className="thirst-select" size="large" suffix={<SearchOutlined style={{fontSize:"20px", color:"#FF7506"}}/>}/>
+                            <Input
+                            type="text"
+                            value={value}
+                            onChange={(e) => setValue(e.target.value)}
+                            onPressEnter={(e) => setKeywords(value)}
+                            placeholder="Nhập từ khóa" style={{ width: '300px', height:"50px" }} className="first-select" size="large" suffix={<SearchOutlined style={{fontSize:"20px", color:"#FF7506"}}/>} />
                       </Form.Item>
                     </Col>
                   
@@ -356,7 +263,49 @@ const Devices = () => {
         <Table 
         // className="table-radius"
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
-        columns={columns} dataSource={data2}
+        columns={columns}
+        // dataSource={data2}
+        dataSource={devices.map((device) => {
+          return {
+              key: device.id,
+              device_id: device.code,
+              device_name: device.name,
+              ip_address: device.ip,
+              active_status: (
+                <Badge color={(device.isActive) ? 'green' : 'volcano'} text={device.isActive
+                  ? "Hoạt động"
+                  : "Ngưng hoạt động"} />
+              ),
+              connect_status: (
+                <Badge color={(device.isConnect) ? 'green' : 'volcano'} text={device.isConnect
+                  ? "Kết nối"
+                  : "Mất kết nối"} />
+              ),
+              services: device.services
+                  .map((value) => {
+                      // return services.find(
+                      //     (service) => service.id == value
+                      // )?.name;
+                      return value
+                  })
+                  .join(", "),
+              detail: (
+                  <Link
+                      to={`/device-details/${device.id}`}
+                  >
+                      <a>Chi tiết</a>
+                  </Link>
+              ),
+              update: (
+                  <Link
+                      to={`/edit-device/${device.id}`}
+                  >
+                      <a>Cập nhật</a>
+                  </Link>
+              ),
+          };
+      })}
+        loading={loading}
         bordered
         pagination={
           {pageSize: 9, itemRender: itemRender}
@@ -367,9 +316,9 @@ const Devices = () => {
           <Button
             // type="primary"
             className="add"
-            style={{marginLeft:"1rem",height:"6rem",width:"4rem", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
+            style={{marginLeft:"1rem",height:"100px",width:"80px", fontWeight:"700", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
             >
-               <Link to="/add-devices"><PlusSquareFilled  style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
+               <Link to="/add-devices"><PlusIcon /><br />
                 Thêm<br/>thiết bị</Link></Button>
           </Col>
         </Row>

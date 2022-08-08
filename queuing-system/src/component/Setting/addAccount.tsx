@@ -8,69 +8,73 @@ import {
     UserOutlined,
     VideoCameraOutlined,
     BellFilled } from '@ant-design/icons';
-    import {
-        Button,
-        Card,
-        Col,
-        Form,
-        Input,
-        Row,
-        Select,
-        Typography,
-        message as notice,
-    } from "antd";
-import { Avatar, Layout, Menu, Breadcrumb, Tooltip, Dropdown} from 'antd';
+import { Avatar, Card, Select, Input, Form, Typography, Layout, Menu, Breadcrumb, Button, Tooltip, Dropdown, Row, Col, Checkbox, InputNumber, message as notice } from 'antd';
 import { Table, Divider, Tag } from 'antd';
 import { useState, useEffect } from 'react';
 import Menubar from "../Menubar/Menubar";
-import { Link, useNavigate, Navigate, useParams } from "react-router-dom";
+import { Timestamp } from "firebase/firestore";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../store";
 import {
-    deviceSelector,
-} from "../../store/reducers/deviceSlice";
-import {addDevice,
+    userSelector,
+    add,
     get,
-    update } from '../../store/actions/deviceActions';
-import {
-    serviceSelector,
-    getAll,
-} from "../../store/reducers/serviceSlice";
-import { userSelector } from "../../store/reducers/userSlice";
+    update,
+} from "../../store/reducers/userSlice";
+import { roleSelector, getAll } from "../../store/reducers/roleSlice";
 import { add as addDiary } from "../../store/reducers/diarySlice";
-import { Timestamp } from "firebase/firestore";
 import   Notification  from "../Notification/Notification";
+
 const { Option } = Select;
 
-
+const menu = (
+    <Menu
+      items={[
+        {
+          label: <a href="https://www.antgroup.com">1st menu item</a>,
+          key: '0',
+        },
+        {
+          label: <a href="https://www.aliyun.com">2nd menu item</a>,
+          key: '1',
+        },
+        {
+          type: 'divider',
+        },
+        {
+          label: '3rd menu item',
+          key: '3',
+        },
+      ]}
+    />
+  );
   interface formValue {
-    code: string;
-    name: string;
     username: string;
     password: string;
-    type: string;
-    ip: string;
+    email: string;
+    phoneNumber: string;
+    role: string;
+    name: string;
     isActive: boolean;
-    isConnect: boolean;
-    services: string[];
 }
+
   const { Header, Content, Sider } = Layout;
 
-  const isActiveValue = [
-    true, false
-]
-var randomItem = isActiveValue[Math.floor(Math.random()*isActiveValue.length)];
-var randomItem2 = isActiveValue[Math.floor(Math.random()*isActiveValue.length)];
-const AddDevices = () => {
+    const isActiveValue = [
+        true, false, undefined
+    ]
+    var randomItem = isActiveValue[Math.floor(Math.random()*isActiveValue.length)];
+
+const AddAccount = () => {
     const idLogin = localStorage.getItem("userId");
     const [form] = Form.useForm();
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const { loading, device } = useAppSelector(deviceSelector);
-    const { services } = useAppSelector(serviceSelector);
-    const { userLogin } = useAppSelector(userSelector);
+    const { authLoading, message, user, userLogin } = useAppSelector(userSelector);
+    const { roles } = useAppSelector(roleSelector);
+
     const onFinish = (value: formValue) => {
-        console.log(value);
         if (id) {
             dispatch(
                 update({
@@ -83,9 +87,9 @@ const AddDevices = () => {
                     notice.success("Cập nhật thành công", 3);
                     dispatch(
                         addDiary({
-                            username: userLogin ? userLogin.username : "",
+                            username: userLogin ? userLogin.username : '',
                             ip: "127.0.0.1",
-                            action: "Cập nhật thông tin thiết bị",
+                            action: "Cập nhật thông tin tài khoản",
                             time: Timestamp.fromDate(new Date()),
                         })
                     );
@@ -94,17 +98,15 @@ const AddDevices = () => {
                 }
             });
         } else {
-            dispatch(
-                addDevice({...value, isActive: randomItem, isConnect: randomItem2})
-            ).then((data) => {
+            dispatch(add(value)).then((data) => {
                 if (data.meta.requestStatus == "fulfilled") {
                     notice.success("Thêm thành công", 3);
-                    navigate("../");
+                    navigate("/");
                     dispatch(
                         addDiary({
-                            username: userLogin ? userLogin.username : "",
+                            username: userLogin ? userLogin.username : '',
                             ip: "127.0.0.1",
-                            action: "Thêm thiết bị",
+                            action: "Thêm tài khoản",
                             time: Timestamp.fromDate(new Date()),
                         })
                     );
@@ -116,14 +118,18 @@ const AddDevices = () => {
     };
 
     useEffect(() => {
-        form.setFieldsValue(device);
-    }, [device]);
+        form.setFieldsValue({
+            ...user,
+            passwordConfirm: user?.password,
+        });
+    }, [user])
     useEffect(() => {
+        dispatch(getAll());
         if (id) {
             dispatch(get(id));
         }
-        dispatch(getAll())
     }, []);
+
     if (!idLogin) return <Navigate to="/login"></Navigate>;
     return (
         <div>
@@ -138,11 +144,11 @@ const AddDevices = () => {
                 className="header"
                 >
                     <Row style={{marginTop:"25px"}}>
-                    <Col span={8}>                       
+                    <Col span={8}>
                      <Breadcrumb separator=">" style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
-                        <Breadcrumb.Item>Thiết bị</Breadcrumb.Item>
-                        <Breadcrumb.Item href="/devices">Danh sách thiết bị</Breadcrumb.Item>
-                        <Breadcrumb.Item>Thêm thiết bị</Breadcrumb.Item>
+                        <Breadcrumb.Item>Cài đặt hệ thống</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/manage-account">Quản lý tài khoản</Breadcrumb.Item>
+                        <Breadcrumb.Item>Thêm tài khoản</Breadcrumb.Item>
                       </Breadcrumb>
                     </Col>
                         <Col span={12}></Col>
@@ -151,9 +157,11 @@ const AddDevices = () => {
                         <Notification />
                         </Col>
                     <Col span={3}>
-                        <Row>
+                    <Row>
                         <Col span={6}>
+                        <Link to='/profile'>
                         <Avatar size="large" icon={<UserOutlined />} />
+                        </Link>
                         </Col >
                         <Col 
                         span={18}
@@ -176,118 +184,64 @@ const AddDevices = () => {
         <div
           className="site-layout-background"
         >
-          <p style={{fontSize:"28px",color:"#FF7506",fontWeight:"700"}}>Quản lý thiết bị</p>
+          <p style={{fontSize:"28px",color:"#FF7506",fontWeight:"700"}}>Quản lý tài khoản</p>
         </div>
         <Row>
           <Col span={23}>
-          <Form layout="vertical" className="section" form={id ? form : undefined}
-            onFinish={onFinish}>
-            <Card style={{borderRadius:"20px",height:"650px", paddingLeft:"10px"}}>
+          <Form
+            form={id ? form : undefined}
+            name="user-add"
+            onFinish={onFinish}
+          layout="vertical"
+          className="section">
+            <Card style={{borderRadius:"20px",height:"650px"}}>
                 <Row>
                     <Col>
                         <Typography.Title className="title" style={{fontSize:"24px",color:"#FF7506",fontWeight:"700"}}>
-                            Thông tin thiết bị
+                            Thông tin tài khoản
                         </Typography.Title>
                     </Col>
                 </Row>
-
-                <Row gutter={24}>
-                    <Col span={12}>
+                    <Row>
+                        <Col span={11}>
                         <Form.Item
-                            name="code"
-                            label={
-                                <>
-                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
-                                    Mã thiết bị:
-                                </Typography.Text>
-                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
-                                    *
-                                </Typography.Text>
-                                </>
-                            }
+                            name="name"
                             required={false}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Vui lòng nhập mã thiết bị",
+                                    message: "Vui lòng nhập họ tên",
                                 },
-                            ]}
+                            ]}                            
+                            label={
+                                <>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
+                                    Họ tên:
+                                </Typography.Text>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
+                                    *
+                                </Typography.Text>
+                                </>
+                            }
                         >
                             <Input
                                 size="large"
-                                placeholder="Nhập mã thiết bị"
+                                placeholder="Nhập họ tên"
                                 style={{height:"50px", borderRadius: "8px"}}
                             />
                         </Form.Item>
-                    </Col>
-                    <Col span={12}>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={11}>
                         <Form.Item
-                        name="type"
-                            label={
-                                <>
-                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
-                                    Loại thiết bị:
-                                </Typography.Text>
-                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
-                                    *
-                                </Typography.Text>
-                                </>
-                            }
-                        >
-                            <Select
-                                size="large"
-                                placeholder="Chọn loại thiết bị"
-                                suffixIcon={
-                                    <CaretDownOutlined
-                                        style={{
-                                            fontSize: "20px",
-                                            color: "#FF7506",
-                                        }}
-                                    />
-                                }
-                                dropdownStyle={{height:"102px"}}
-                            >
-                                <Option key={1} value={"Kiosk"}>
-                                    {"Kiosk"}
-                                </Option>
-                                <Option key={2} value={"DisplayCounter"}>
-                                    {"Display Counter"}
-                                </Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name="name"
-                            label={
-                                <>
-                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
-                                    Tên thiết bị:
-                                </Typography.Text>
-                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
-                                    *
-                                </Typography.Text>
-                                </>
-                            }
+                            name="username"
                             required={false}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Vui lòng nhập tên thiết bị",
+                                    message: "Vui lòng nhập tên đăng nhập",
                                 },
                             ]}
-                        >
-                            <Input
-                                size="large"
-                                placeholder="Nhập tên thiết bị"
-                                style={{height:"50px", borderRadius: "8px"}}
-                                // value={"abc"}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name="username"
                             label={
                                 <>
                                 <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
@@ -298,44 +252,55 @@ const AddDevices = () => {
                                 </Typography.Text>
                                 </>
                             }
+                        >
+                            <Input
+                                size="large"
+                                placeholder="Nhập tên đăng nhập"
+                                style={{height:"50px", borderRadius: "8px"}}
+                            />
+                        </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={11}>
+                        <Form.Item
+                            name="phoneNumber"
                             required={false}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Vui lòng nhập tên đăng nhập",
+                                    message: "Vui lòng nhập số điện thoại",
                                 },
                             ]}
-                        >
-                            <Input size="large" placeholder="Nhập tài khoản" style={{height:"50px", borderRadius: "8px"}}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            name="ip"
                             label={
                                 <>
                                 <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
-                                    Địa chỉ IP:
+                                    Số điện thoại:
                                 </Typography.Text>
                                 <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
                                     *
                                 </Typography.Text>
                                 </>
                             }
+                        >
+                            <Input
+                                size="large"
+                                placeholder="Nhập số điện thoại"
+                                style={{height:"50px", borderRadius: "8px"}}
+                            />
+                        </Form.Item>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={11}>
+                        <Form.Item
+                            name="password"
                             required={false}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Vui lòng nhập địa chỉ ip",
+                                    message: "Vui lòng nhập mật khẩu",
                                 },
                             ]}
-                        >
-                            <Input size="large" placeholder="Nhập địa chỉ IP" style={{height:"50px", borderRadius: "8px"}}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                        name="password"
                             label={
                                 <>
                                 <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
@@ -346,6 +311,50 @@ const AddDevices = () => {
                                 </Typography.Text>
                                 </>
                             }
+                        >
+                            <Input.Password
+                                size="large"
+                                placeholder="Nhập mật khẩu"
+                                style={{height:"50px", borderRadius: "8px"}}
+                            />
+                        </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={11}>
+                        <Form.Item
+                            name="email"
+                            required={false}
+                            rules={[
+                                {
+                                    required: true,
+                                    type:"email",
+                                    message: "Vui lòng nhập email",
+                                },
+                            ]}
+                            label={
+                                <>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
+                                    Email:
+                                </Typography.Text>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
+                                    *
+                                </Typography.Text>
+                                </>
+                            }
+                        >
+                            <Input
+                                autoComplete="false"
+                                size="large"
+                                placeholder="Nhập email"
+                                style={{height:"50px", borderRadius: "8px"}}
+                            />
+                        </Form.Item>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={11}>
+                        <Form.Item
+                            name="passwordConfirm"
                             required={false}
                             rules={[
                                 {
@@ -353,50 +362,102 @@ const AddDevices = () => {
                                     message: "Vui lòng nhập mật khẩu",
                                 },
                             ]}
-                        >
-                            <Input size="large" placeholder="Nhập mật khẩu" style={{height:"50px", borderRadius: "8px"}}/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            name="services"
                             label={
                                 <>
                                 <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
-                                    Dịch vụ sử dụng:
+                                    Nhập lại mật khẩu:
                                 </Typography.Text>
                                 <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
                                     *
                                 </Typography.Text>
                                 </>
                             }
-                            required={false}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Vui lòng chọn dịch vụ sử dụng",
-                                },
-                            ]}
+                        >
+                            <Input.Password
+                                size="large"
+                                placeholder="Nhập mật khẩu"
+                                style={{height:"50px", borderRadius: "8px"}}
+                            />
+                        </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={11}>
+                        <Form.Item
+                            name="role"
+                            label={
+                                <>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
+                                    Vai trò:
+                                </Typography.Text>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
+                                    *
+                                </Typography.Text>
+                                </>
+                            }
                         >
                             <Select
-                                mode="multiple"
-                                allowClear
                                 size="large"
-                                placeholder="Nhập dịch vụ sử dụng"
-                                dropdownStyle={{height:"270px"}}
+                                placeholder="Chọn vai trò"
+                                suffixIcon={
+                                    <CaretDownOutlined
+                                        style={{
+                                            fontSize: "20px",
+                                            color: "#FF7506",
+                                        }}
+                                    />
+                                }
+                                dropdownStyle={{height:"102px"}}
                             >
-                                {services.map(service => {
+                                {roles.map((role) => {
                                     return (
-                                        <Option key={service.id} value={service.name}>
-                                            {service.name}
+                                        <Option key={role.id} value={role.id}>
+                                            {role.name}
                                         </Option>
-                                    )
+                                    );
                                 })}
                             </Select>
                         </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={11}>
+                        <Form.Item
+                            name="isActive"
+                            label={
+                                <>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600"}}>
+                                    Tình trạng:
+                                </Typography.Text>
+                                <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginLeft:"10px",color:"red"}}>
+                                    *
+                                </Typography.Text>
+                                </>
+                            }
+                        >
+                            <Select
+                                size="large"
+                                placeholder="Chọn tình trạng"
+                                defaultValue={true}
+                                suffixIcon={
+                                    <CaretDownOutlined
+                                        style={{
+                                            fontSize: "20px",
+                                            color: "#FF7506",
+                                        }}
+                                    />
+                                }
+                            >
+                                <Option key={1} value={true}>
+                                    Hoạt động
+                                </Option>
+                                <Option key={2} value={false}>
+                                    Ngưng hoạt động
+                                </Option>
+                            </Select>
+                        </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row style={{marginTop:"30px"}}>
                     <Typography.Text className="label" style={{fontSize:"20px",fontWeight:"600",marginRight:"10px",color:"red"}}>
                         *
                     </Typography.Text>
@@ -418,7 +479,7 @@ const AddDevices = () => {
                         className="button-cancel"
                         style={{borderColor:"#FF7506",borderRadius:"10px",color:"#FF7506",background:"rgba(255, 242, 231, 1)",height:"55px",width:"160px",fontSize:"18px"}}
                     >  
-                        <Link to="/devices">Hủy bỏ</Link>
+                        <Link to="/manage-account">Hủy bỏ</Link>
                     </Button>
                 </Col>
                 <Col>
@@ -427,9 +488,9 @@ const AddDevices = () => {
                         // type="primary"
                         style={{border:"none",borderRadius:"10px",color:"white",background:"#FF9138",height:"55px",width:"160px",fontSize:"18px"}}
                         htmlType="submit"
-                        loading={loading}
+                        loading={authLoading}
                     >
-                        {loading ? "" : id ? "Cập nhật" : "Thêm thiết bị"}
+                        {authLoading ? "" : id ? "Cập nhật" : "Thêm"}
                     </Button>
                 </Col>
             </Row>
@@ -443,4 +504,4 @@ const AddDevices = () => {
     )
 }
 
-export default AddDevices;
+export default AddAccount;

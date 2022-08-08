@@ -10,13 +10,28 @@ import {
     SearchOutlined ,
     CaretDownOutlined,
     BellFilled } from '@ant-design/icons';
-import { Avatar, Badge, Layout, Menu, Form, Space, Input, Typography, Select, Button, Tooltip, Dropdown, Row, Col } from 'antd';
+import { Avatar, Badge, Layout, Breadcrumb, Menu, Form, DatePicker, Space, Input, Typography, Select, Button, Tooltip, Dropdown, Row, Col } from 'antd';
 import { Table, Divider, Tag } from 'antd';
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../store";
+import {
+    giveNumberSelector,
+    getAll,
+} from "../../store/reducers/giveNumberSlice";
+import {
+    serviceSelector,
+    getAll as getAllService,
+} from "../../store/reducers/serviceSlice";
+import { userSelector } from "../../store/reducers/userSlice";
 import { ColumnsType } from 'antd/lib/table';
-import { useState } from 'react';
-import { IWindowSize, useWindowSize } from "../Login/login";
+import { useState, useEffect } from 'react';
+import moment, { Moment } from "moment";
+import { RangeValue } from "rc-picker/lib/interface";
 import Menubar from "../Menubar/Menubar";
-import { Link } from "react-router-dom";
+import PlusIcon from "../Icons/Plus";
+import   Notification  from "../Notification/Notification";
+
+const {RangePicker} = DatePicker;
 const menu = (
     <Menu
       items={[
@@ -45,19 +60,8 @@ const menu = (
     console.log(`selected ${value}`);
   };
   
-  interface DataType {
-    key: string;
-    stt:string;
-    name_cus: string;
-    name_ser: string;
-    time: string;
-    hsd:string;
-    status: string[];
-    nsx: string;
-    detail: string;
-  }
   
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
       title: 'STT',
       dataIndex: 'stt',
@@ -88,26 +92,6 @@ const menu = (
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (_, { status }) => (
-        <>
-          {status.map(status => {
-            let color = status.length > 5 ? 'geekblue' : 'green';
-            
-            if (status === 'Bỏ qua') {
-              color = 'volcano';
-            }
-            if (status === 'Đang chờ') {
-              color = 'blue';
-            }
-            if (status === 'Đã sử dụng') {
-              color = 'gray';
-            }
-            return (
-              <Badge color={color} text={status}/>
-            );
-          })}
-        </>
-      ),
     },
     {
       title: 'Nguồn cấp',
@@ -117,125 +101,10 @@ const menu = (
     {
       title: '',
       dataIndex: 'detail',
-      key: 'detail',
-      render: text => <a>{text}</a>,
+      key: 'detail', 
     },
-  
   ]
-  
-  const data: DataType[] = [
-    {
-      key: '1',
-      stt:'2010001',
-      name_cus: 'Nguyễn Văn A',
-      name_ser: 'Khám tim mạch',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đang chờ'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '2',
-      stt:'2010002',
-      name_cus: 'Nguyễn Văn B',
-      name_ser: 'Khám sản - Phụ khoa',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đã sử dụng'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '3',
-      stt:'2010003',
-      name_cus: 'Nguyễn Văn C',
-      name_ser: 'Khám tim mạch',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Bỏ qua'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '4',
-      stt:'2010004',
-      name_cus: 'Nguyễn Văn B',
-      name_ser: 'Khám sản - Phụ khoa',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đã sử dụng'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '5',
-      stt:'2010005',
-      name_cus: 'Nguyễn Văn A',
-      name_ser:'Khám mắt',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đang chờ'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '6',
-      stt:'2010006',
-      name_cus: 'Nguyễn Văn B',
-      name_ser: 'Khám sản - Phụ khoa',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Bỏ qua'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '7',
-      stt:'2010007',
-      name_cus: 'Nguyễn Văn A',
-      name_ser: 'Khám tim mạch',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đang chờ'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '8',
-      stt:'2010008',
-      name_cus: 'Nguyễn Văn B',
-      name_ser: 'Khám sản - Phụ khoa',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đã sử dụng'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '9',
-      stt:'2010009',
-      name_cus: 'Nguyễn Văn A',
-      name_ser: 'Khám tim mạch',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đang chờ'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-    {
-      key: '10',
-      stt:'2010010',
-      name_cus: 'Nguyễn Văn B',
-      name_ser: 'Khám sản - Phụ khoa',
-      time: '14:35 - 07/11/2022',
-      hsd:  '14:35 - 21/11/2022',
-      status:['Đã sử dụng'],
-      nsx: 'Kiosk',
-      detail: 'Chi tiết',
-    },
-  
-  ];  
+
   const { Header, Content, Sider } = Layout;
 
   function itemRender(current:any, type:any, originalElement:any) {
@@ -249,10 +118,41 @@ const menu = (
   }
 
 const GiveNumber = () => {
-  const [data2, setData2] = useState<DataType[]>(data);
+  const idLogin = localStorage.getItem("userId");
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, giveNumbers } = useAppSelector(giveNumberSelector);
+  const { services } = useAppSelector(serviceSelector);
+  const { userLogin } = useAppSelector(userSelector);
+  const [status, setStatus] = useState<string | null>(null);
+  const [src, setSrc] = useState<string>("");
+  const [service, setService] = useState<string>("");
+  const [keywords, setKeywords] = useState<string>("");
+  const [dateRange, setDateRange] = useState<RangeValue<Moment>>(null);
+  const [value, setValue] = useState<string>('')
+
+  useEffect(() => {
+      dispatch(
+          getAll({
+              status,
+              src,
+              service,
+              keywords,
+              dateRange: dateRange
+                  ? [dateRange[0] as Moment, dateRange[1] as Moment]
+                  : null,
+          })
+      );
+  }, [status, src, service, keywords, dateRange]);
+
+  useEffect(() => {
+      dispatch(getAllService());
+  }, []);
+
+  if (!idLogin) return <Navigate to="/login"></Navigate>;
     return (
         <div>
-<Layout style={{"height":"100vh"}}>
+<Layout style={{"height":"100vh",fontFamily:"Nunito"}}>
     <Sider
     style={{background:"white"}}
     >
@@ -262,48 +162,47 @@ const GiveNumber = () => {
     <Header
                 className="header"
                 >
-                    <Row style={{marginTop:"10px"}}>
-                    <Col span={5}><span style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
-                    Cấp số &gt; </span>
-                    <span style={{fontWeight:"700",fontSize:"20px",color: "#FF7506"}}>
-                    Danh sách cấp số</span>
+                    <Row style={{marginTop:"25px"}}>
+                    <Col span={5}>
+                      <Breadcrumb separator=">" style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
+                        <Breadcrumb.Item>Cấp số</Breadcrumb.Item>
+                        <Breadcrumb.Item>Danh sách cấp số</Breadcrumb.Item>
+                      </Breadcrumb>
                     </Col>
                         <Col span={15}></Col>
                         <Col 
                         span={1}>
-                        <Dropdown overlay={menu} trigger={['click']}>
-                                <a onClick={e => e.preventDefault()}>
-                                    <Tooltip title="search">
-                                        <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
-                                    </Tooltip>
-                                </a>
-                            </Dropdown>
+                          <Notification />
                         </Col>
                     <Col span={3}>
-                        <Row>
+                    <Row>
                         <Col span={6}>
+                        <Link to='/profile'>
                         <Avatar size="large" icon={<UserOutlined />} />
+                        </Link>
                         </Col >
                         <Col 
                         span={18}
                         style={{marginTop:"-0.7rem"}}
                         >
-                        <p>Xin chào</p>
-                        <h1 style={{marginTop:"-3.5rem"}}>Nguyễn Thọ Nam</h1>
+                        <Link to='/profile'>
+                            <Row><Typography.Text>Xin chào</Typography.Text></Row>
+                            <Row><Typography.Text  style={{marginTop:"-40px", fontWeight:"700"}}>{userLogin?.name}</Typography.Text ></Row>
+                        </Link>
                         </Col>
                         </Row>
                     </Col>
                     </Row>
                 </Header>
-      <Content
+                <Content
         style={{
-          margin: '30px 0 0 4rem',
+          margin: '31px 0rem 0 3rem',
         }}
       >
         <div
           className="site-layout-background"
         >
-          <p style={{fontSize:"24px", fontWeight:"700", lineHeight:"36px", color:"#FF7506"}}>Quản lý cấp số</p>
+          <p style={{fontSize:"28px",color:"#FF7506",fontWeight:"700"}}>Quản lý cấp số</p>
         </div>
         <Row>
           <Col span={22}>
@@ -313,46 +212,75 @@ const GiveNumber = () => {
                     <Space>
                       <Form.Item
                       label={<Typography.Text strong className="text-1" style={{fontSize:"16px"}}>Tên dịch vụ</Typography.Text>}
-                      className='selectContainer'
                       >      
-                        <Select defaultValue="all" style={{width:"154px", height:"44px", borderRadius:"10px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
+                        <Select 
+                        defaultValue={""}
+                        value={service}
+                        onChange={(value) => setService(value)}
+                        style={{width:"180px", height:"50px", borderRadius:"10px"}} className="first-select" size="large" suffixIcon={
                           <CaretDownOutlined
                             style={{ fontSize: "20px", color: "#FF7506" }}
                           />
                         }>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="yes">Hoạt động</Option>
-                                <Option value="no">Ngưng hoạt động</Option>
+                                <Option value={""}>Tất cả</Option>
+                                {services.map((service) => {
+                                        return (
+                                            <Option value={service.id}>
+                                                {service.name}
+                                            </Option>
+                                        );
+                                    })}
                               </Select>
                           </Form.Item>
                           <Form.Item
-                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px"}}>Tình trạng</Typography.Text>}
+                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"25px"}}>Tình trạng</Typography.Text>}
                       className='selectContainer'
                       >      
-                        <Select defaultValue="all" style={{width:"154px", height:"44px", borderRadius:"10px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
+                        <Select 
+                        defaultValue={null}
+                        value={status}
+                        onChange={(value) => setStatus(value)}style={{width:"180px", height:"50px", borderRadius:"10px", marginLeft:"25px"}} className="first-select" size="large" suffixIcon={
                           <CaretDownOutlined
                             style={{ fontSize: "20px", color: "#FF7506" }}
                           />
-                        }>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="waiting">Đang chờ</Option>
-                                <Option value="used">Đã sử dụng</Option>
-                                <Option value="passed">Bỏ qua</Option>
+                        }
+                        dropdownStyle={{height:"200px"}}
+                        >
+                                    <Option value={null}>Tất cả</Option>
+                                    <Option value="waiting">Đang chờ</Option>
+                                    <Option value="used">Đã sử dụng</Option>
+                                    <Option value="skip">Bỏ qua</Option>
                               </Select>
                           </Form.Item>  
                           <Form.Item
-                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"15px"}}>Nguồn cấp</Typography.Text>}
+                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"25px"}}>Nguồn cấp</Typography.Text>}
                       className='selectContainer'
                       >      
-                        <Select defaultValue="all" style={{width:"154px", height:"44px", borderRadius:"10px",marginLeft:"15px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
+                        <Select 
+                        defaultValue={""}
+                        value={src}
+                        onChange={(value) => setSrc(value)}
+                        style={{width:"180px", height:"50px", borderRadius:"10px",marginLeft:"25px"}} className="first-select" size="large" suffixIcon={
                           <CaretDownOutlined
                             style={{ fontSize: "20px", color: "#FF7506" }}
                           />
-                        }>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="yes">Kết nối</Option>
-                                <Option value="no">Mất kết nối</Option>
+                        }
+                        >
+                                    <Option value={""}>Tất cả</Option>
+                                    <Option value="Kiosk">Kiosk</Option>
+                                    <Option value="Hệ thống">Hệ thống</Option>
                               </Select>
+                          </Form.Item>
+                          <Form.Item
+                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"30px"}}>Chọn thời gian</Typography.Text>}
+                      >      
+                            <div className="date-pick1" style={{marginLeft:"30px"}}>
+                            {/* <Form.Item noStyle> */}
+                              <RangePicker format="DD/MM/YYYY" style={{height:"52px",fontSize:"24px"}} onChange={(e) =>setDateRange(e)}
+                              // suffixIcon={} 
+                                />
+                            {/* </Form.Item> */}
+                            </div>
                           </Form.Item>
                       </Space>
                     </Col>
@@ -360,7 +288,11 @@ const GiveNumber = () => {
                       <Form.Item
                         label={<Typography.Text strong className="text-3" style={{fontSize:"16px"}}>Từ khóa</Typography.Text>}
                       >
-                            <Input placeholder="Nhập từ khóa" style={{ width: '300px', height:"44px" }} className="thirst-select" size="large" suffix={<SearchOutlined style={{fontSize:"20px", color:"#FF7506"}}/>}/>
+                            <Input
+                            value={value}
+                            onChange={(e) => setValue(e.target.value)}
+                            onPressEnter={(e) => setKeywords(value)}
+                            placeholder="Nhập từ khóa" style={{ width: '300px', height:"44px" }} className="thirst-select" size="large" suffix={<SearchOutlined style={{fontSize:"20px", color:"#FF7506"}}/>}/>
                       </Form.Item>
                     </Col>
                   
@@ -372,7 +304,39 @@ const GiveNumber = () => {
           <Col span={22}>
         <Table 
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
-        columns={columns} dataSource={data2}
+        columns={columns}
+        // dataSource={data2}
+        loading={loading}
+        dataSource={giveNumbers.map((giveNumber) => {
+            return {
+                key: giveNumber.id,
+                stt: giveNumber.number,
+                name_cus: giveNumber.name,
+                name_ser: giveNumber.service,
+                time: moment(
+                    giveNumber.timeGet.toDate()
+                ).format("HH:mm - DD/MM/YYYY"),
+                hsd: moment(
+                    giveNumber.timeExp.toDate()
+                ).format("HH:mm - DD/MM/YYYY"),
+                status: (
+                  <Badge color={giveNumber.status == "skip" ? 'volcano' : giveNumber.status == "waiting" ? 'blue' : 'rgb(190, 190, 190)'} text={giveNumber.status == "waiting"
+                  ? "Đang chờ"
+                  : giveNumber.status ==
+                    "used"
+                  ? "Đã sử dụng"
+                  : "Bỏ qua"} />
+                ),
+                nsx: giveNumber.src,
+                detail: (
+                    <Link
+                        to={`/number-details/${giveNumber.id}`}
+                    >
+                        <a>Chi tiết</a>
+                    </Link>
+                ),
+            };
+        })}
         bordered
         pagination={
           {pageSize: 9, itemRender: itemRender}
@@ -380,12 +344,12 @@ const GiveNumber = () => {
         />
           </Col>
           <Col span={2}>
-            <Button
+          <Button
             // type="primary"
             className="add"
-            style={{marginLeft:"1rem",height:"6rem",width:"4rem", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
+            style={{marginLeft:"1rem",height:"100px",width:"80px", fontWeight:"700", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
             >
-            <Link to="/manage-number"><PlusSquareFilled  style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
+            <Link to="/manage-number"><PlusIcon  style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
                 Cấp<br/>số mới</Link>
                 </Button>
           </Col>

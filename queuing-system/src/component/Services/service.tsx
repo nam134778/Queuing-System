@@ -10,12 +10,25 @@ import {
     SearchOutlined,
     CaretRightOutlined,
     BellFilled } from '@ant-design/icons';
-import { Avatar, Card, Select, DatePicker, Typography, Form, Input, Badge, Space, Layout, Menu, MenuProps, Button, Tooltip, Dropdown, Row, Col } from 'antd';
+import { Avatar, Card, Select, DatePicker, Typography, Form, Input, Badge, Space, Layout, Menu, Breadcrumb, Button, Tooltip, Dropdown, Row, Col } from 'antd';
 import { Table, Divider, Tag } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
-import { useState } from 'react';
-import { IWindowSize, useWindowSize } from "../Login/login";
+import { Moment } from "moment";
+import {
+  DayRange,
+} from "@hassanmojab/react-modern-calendar-datepicker";
+import { RangeValue } from "rc-picker/lib/interface";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../store";
+import {
+    serviceSelector,
+    getAll,
+} from "../../store/reducers/serviceSlice";
+import { userSelector } from "../../store/reducers/userSlice";
+import { useState, useEffect } from 'react';
 import Menubar from "../Menubar/Menubar";
+import PlusIcon from "../Icons/Plus";
+import   Notification  from "../Notification/Notification";
+
 const {RangePicker} = DatePicker;
 const menu = (
     <Menu
@@ -54,25 +67,16 @@ const menu = (
     return originalElement;
   }
 
-  interface DataType {
-    key: string;
-    ma:string;
-    name: string;
-    details: string;
-    status: string[];
-    detail: string;
-    update: string;
-  }
   
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
-      title: 'Mã thiết bị',
+      title: 'Mã dịch vụ',
       dataIndex: 'ma',
       key: 'ma',
       
     },
     {
-      title: 'Tên thiết bị',
+      title: 'Tên dịch vụ',
       dataIndex: 'name',
       key: 'name',
     },
@@ -85,236 +89,51 @@ const menu = (
       title: 'Trạng thái hoạt động',
       dataIndex: 'status',
       key: 'status',
-      render: (_, { status }) => (
-        <>
-          {status.map(status => {
-            let color = status.length > 5 ? 'geekblue' : 'green';
-            
-            if (status === 'Ngưng hoạt động') {
-              color = 'volcano';
-            }
-            if (status === 'Hoạt động') {
-              color = 'green';
-            }
-            return (
-              <Badge color={color} text={status} />
-            );
-          })}
-        </>
-      ),
     },
     {
       title: '',
       dataIndex: 'detail',
       key: 'detail',
-      render: text => <a>{text}</a>,
     },
     {
       title: '',
       dataIndex: 'update',
       key: 'update',
-      render: text => <a>{text}</a>,
     },
   
   ]
   
-  const data: DataType[] = [
-    {
-      key: '1',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Mô tả dịch vụ 1',
-      status: ['Ngưng hoạt động'],
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '2',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '3',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Ngưng hoạt động'],
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '4',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Ngưng hoạt động'],
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '5',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Ngưng hoạt động'],
+  const { Header, Content, Sider } = Layout;
 
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '6',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '7',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '8',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '9',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '10',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '11',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '12',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '13',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '14',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '15',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '16',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '17',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '18',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-    {
-      key: '19',
-      ma: 'KIO_01',
-      name: 'Kiosk',
-      details: 'Hoạt động',
-      status: ['Hoạt động'],
-
-      detail: 'Chi tiết',
-      update: 'Cập nhật'
-    },
-  
-  ];
-  const { Header, Content, Footer, Sider } = Layout;
-
-
+  interface IDateRange {
+    value?: RangeValue<Moment>;
+    onChange?: (value: RangeValue<Moment>) => void;
+}
 const Services = () => {
-  const [data2, setData2] = useState<DataType[]>(data);
+  const idLogin = localStorage.getItem("userId");
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, services } = useAppSelector(serviceSelector);
+  const { userLogin } = useAppSelector(userSelector);
+  const [active, setActive] = useState<boolean | null>(null);
+  const [keywords, setKeywords] = useState<string>("");
+  const [dateRange, setDateRange] = useState<RangeValue<Moment>>(null);
+  const [value, setValue] = useState<string>('')
+
+  useEffect(() => {
+      dispatch(
+          getAll({
+              active,
+              keywords,
+              dateRange: dateRange ? [dateRange[0] as Moment, dateRange[1] as Moment] : null,
+          })
+      );
+  }, [active, keywords, dateRange]);
+
+  if (!idLogin) return <Navigate to="/login"></Navigate>;
     return (
         <div>
-<Layout style={{"height":"100vh"}}>
+<Layout style={{height:"100vh",fontFamily:"Nunito"}}>
     <Sider
     style={{background:"white"}}
     >
@@ -324,34 +143,33 @@ const Services = () => {
     <Header
                 className="header"
                 >
-                    <Row style={{marginTop:"10px"}}>
-                    <Col span={5}><span style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
-                    Dịch vụ &gt; </span>
-                    <span style={{fontWeight:"700",fontSize:"20px",color: "#FF7506"}}>
-                    Danh sách dịch vụ</span>
+                    <Row style={{marginTop:"25px"}}>
+                    <Col span={5}>
+                      <Breadcrumb separator=">" style={{fontWeight:"700",fontSize:"20px",color: "#7E7D88"}}>
+                        <Breadcrumb.Item>Dịch vụ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Danh sách dịch vụ</Breadcrumb.Item>
+                      </Breadcrumb>
                     </Col>
                         <Col span={15}></Col>
                         <Col 
                         span={1}>
-                        <Dropdown overlay={menu} trigger={['click']}>
-                                <a onClick={e => e.preventDefault()}>
-                                    <Tooltip title="search">
-                                        <Button type="primary" shape="circle" className="bell-button" icon={<BellFilled className="bell"/>} />
-                                    </Tooltip>
-                                </a>
-                            </Dropdown>
+                        <Notification />
                         </Col>
                     <Col span={3}>
-                        <Row>
+                    <Row>
                         <Col span={6}>
+                        <Link to='/profile'>
                         <Avatar size="large" icon={<UserOutlined />} />
+                        </Link>
                         </Col >
                         <Col 
                         span={18}
                         style={{marginTop:"-0.7rem"}}
                         >
-                        <p>Xin chào</p>
-                        <h1 style={{marginTop:"-3.5rem"}}>Nguyễn Thọ Nam</h1>
+                        <Link to='/profile'>
+                            <Row><Typography.Text>Xin chào</Typography.Text></Row>
+                            <Row><Typography.Text  style={{marginTop:"-40px", fontWeight:"700"}}>{userLogin?.name}</Typography.Text ></Row>
+                        </Link>
                         </Col>
                         </Row>
                     </Col>
@@ -359,13 +177,13 @@ const Services = () => {
                 </Header>
                 <Content
         style={{
-          margin: '30px 0 0 4rem',
+          margin: '31px 0rem 0 3rem',
         }}
       >
         <div
           className="site-layout-background"
         >
-          <p style={{fontSize:"24px", fontWeight:"700", lineHeight:"36px", color:"#FF7506"}}>Quản lý dịch vụ</p>
+          <p style={{fontSize:"28px",color:"#FF7506",fontWeight:"700"}}>Quản lý dịch vụ</p>
         </div>
         <Row>
           <Col span={22}>
@@ -377,35 +195,26 @@ const Services = () => {
                       label={<Typography.Text strong className="text-1" style={{fontSize:"16px"}}>Trạng thái hoạt động</Typography.Text>}
                       className='selectContainer'
                       >      
-                        <Select defaultValue="all" style={{width:"300px", height:"44px", borderRadius:"10px"}} onChange={handleChange} className="first-select" size="large" suffixIcon={
+                        <Select 
+                        defaultValue={null}
+                        value={active}
+                        onChange={(value) => setActive(value)}
+                        style={{width:"300px", height:"50px", borderRadius:"10px"}} className="first-select" size="large" suffixIcon={
                           <CaretDownOutlined
                             style={{ fontSize: "20px", color: "#FF7506" }}
                           />
                         }>
-                                <Option value="all">Tất cả</Option>
-                                <Option value="yes">Hoạt động</Option>
-                                <Option value="no">Ngưng hoạt động</Option>
+                                <Option value={null}>Tất cả</Option>
+                                <Option value={true}>Hoạt động</Option>
+                                <Option value={false}>Ngưng hoạt động</Option>
                               </Select>
                           </Form.Item>
                           <Form.Item
-                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"30px"}}>Trạng thái kết nối</Typography.Text>}
-                      className='selectContainer'
+                      label={<Typography.Text strong className="text-1" style={{fontSize:"16px", marginLeft:"30px"}}>Chọn thời gian</Typography.Text>}
                       >      
-                            <div className="date-pick1" style={{marginLeft:"15px"}}>
-                            {/* <Form.Item noStyle>
-                            <DatePicker size="large" style={{ borderRadius:"8px"}}/>
-                            </Form.Item>
-                            <CaretRightOutlined style={{color:"#FF7506"}}/>
-                            <Form.Item noStyle>
-                            <DatePicker size="large" style={{ borderRadius:"8px"}}/>
-                            </Form.Item> */}
-                            <div className="date-pick1" style={{marginLeft:"15px"}}>
-                            <Form.Item noStyle>
-                              <RangePicker format="YYYY-MM-DD"
-                              // suffixIcon={} 
+                            <div className="date-pick1" style={{marginLeft:"30px"}}>
+                              <RangePicker format="DD/MM/YYYY" style={{height:"52px",fontSize:"24px"}} onChange={(e) =>setDateRange(e)}
                                 />
-                            </Form.Item>
-                            </div>
                             </div>
                           </Form.Item>
                       </Space>
@@ -414,7 +223,12 @@ const Services = () => {
                       <Form.Item
                         label={<Typography.Text strong className="text-3" style={{fontSize:"16px"}}>Từ khóa</Typography.Text>}
                       >
-                            <Input placeholder="Nhập từ khóa" style={{ width: '300px', height:"44px" }} className="thirst-select" size="large" suffix={<SearchOutlined style={{fontSize:"20px", color:"#FF7506"}}/>}/>
+                            <Input
+                              type="text"
+                              value={value}
+                              onChange={(e) => setValue(e.target.value)}
+                              onPressEnter={(e) => setKeywords(value)}
+                            placeholder="Nhập từ khóa" style={{ width: '300px', height:"50px" }} className="thirst-select" size="large" suffix={<SearchOutlined style={{fontSize:"20px", color:"#FF7506"}}/>}/>
                       </Form.Item>
                     </Col>
                   
@@ -425,9 +239,36 @@ const Services = () => {
         <Row>
           <Col span={22}>
         <Table 
-        // className="table-radius"
         rowClassName={(record:any, index:any) => index %2 === 0 ? 'table-row-light' :  'table-row-dark'}
-        columns={columns} dataSource={data2}
+        columns={columns}
+        loading={loading}
+        dataSource={services.map((service) => {
+          return {
+              key: service.id,
+              ma: service.code,
+              name: service.name,
+              details: service.description,
+              status: (
+                <Badge color={service.isActive ? 'green' : 'volcano'} text={service.isActive
+                  ? "Hoạt động"
+                  : "Ngưng hoạt động"} />
+              ),
+              detail: (
+                  <Link
+                      to={`/service-details/${service.id}`}
+                  >
+                      <a>Chi tiết</a>
+                  </Link>
+              ),
+              update: (
+                  <Link
+                      to={`/edit-service/${service.id}`}
+                  >
+                      <a>Cập nhật</a>
+                  </Link>
+              ),
+          };
+      })}
         bordered
         pagination={
           {pageSize: 9, itemRender: itemRender}
@@ -435,12 +276,14 @@ const Services = () => {
         />
           </Col>
           <Col span={2}>
+          <Link to="/add-services">
           <Button
             // type="primary"
             className="add"
-            style={{marginLeft:"1rem",height:"6rem",width:"4rem", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
-            ><PlusSquareFilled  style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
-                Thêm<br/>dịch vụ</Button>
+            style={{marginLeft:"1rem",height:"100px",width:"80px", fontWeight:"700", position:"absolute",right:"0",textAlign:"center",background:"#FFF2E7"}}
+            >
+            <PlusIcon style={{fontSize:"25px", borderStartEndRadius:"2px"}}/><br />
+                Thêm<br/>dịch vụ</Button></Link>
           </Col>
         </Row>
       </Content>

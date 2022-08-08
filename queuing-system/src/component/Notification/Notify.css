@@ -1,0 +1,61 @@
+.notifyContainer {
+    position: relative;
+}
+.notifyContainer .bellNotify {
+    width: 32px;
+    height: 32px;
+    border: none;
+    color: #ffac6a;
+    background-color: #fff2e7;
+}
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color:  #ffac6a;
+  }
+
+.notifyContainer .PopupMenu {
+    position: absolute;
+    top: 60px;
+    left: -200px;
+    max-height: 526px;
+    width: 400px;
+    overflow-y: scroll;
+    border-radius: 8px;
+    z-index: 100;
+    background-color: #fff;
+    box-shadow: 0 4px 6px 0 rgb(219, 219, 219);
+}
+.notifyContainer .PopupMenu .title {
+    padding: 10px 24px;
+    color: #fff;
+    height: 50px;
+    font-size: 22px;
+    margin-left: -25px;
+}
+.notifyContainer .PopupMenu .item:hover {
+    background-color: #fff2e7;
+    cursor: pointer;
+}
+
+.ant-list-header {
+    background: #FF9138;
+    color: white;
+    height: 50px;
+  }
+  .ant-list-header,
+.ant-list-footer {
+  padding-top: 0;
+  padding-bottom: 0;
+}

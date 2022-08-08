@@ -67,6 +67,18 @@
     background-color: rgb(255, 227, 218);
     border: 0;
   }
+  .button-2:hover {
+    background-color: rgb(205, 255, 204);
+    border: 0;
+  }
+  .button-3:hover {
+    background-color: rgb(255, 233, 204);
+    border: 0;
+  }
+  .button-4:hover {
+    background-color: rgb(255, 227, 218);
+    border: 0;
+  }
   .button-1-2 {
     height:1.5rem;
     margin-top: 0.7rem;
@@ -175,4 +187,7 @@ tr > .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:last-child::afte
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
   border: 1px solid #FF7506;
   border-radius: 7px;
+}
+.ant-statistic-content {
+  font-family: 'Nunito';
 }
